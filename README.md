@@ -22,8 +22,6 @@ Just execute the script:
 
 It will build the container image with the rules.
 
-
-
 # Docker image
 
 You can create a Docker image that will share the rules folder with:
