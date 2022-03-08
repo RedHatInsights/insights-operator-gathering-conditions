@@ -19,7 +19,7 @@ jobs:
           python-version: 3.x
       - name: Download dependencies
         run: |
-          python -m pip3 install -r requirements.txt
+          pip3 install -r requirements.txt
       - name: Run validator
         run: |
           python validate.py
