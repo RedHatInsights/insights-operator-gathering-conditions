@@ -12,6 +12,9 @@
         "alert_name": "KubePodNotReady",
         "tail_lines": 100,
         "previous": false
+      },
+      "pod_definition": {
+        "alert_name": "KubePodNotReady"
       }
     }
   }
