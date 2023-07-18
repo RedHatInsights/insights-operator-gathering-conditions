@@ -1,0 +1,18 @@
+{
+  "conditions": [
+    {
+      "type": "alert_is_firing",
+      "alert": {
+        "name": "CephClusterErrorState"
+      }
+    }
+  ],
+  "gathering_functions": {
+    "containers_logs": {
+      "alert_name": "CephClusterErrorState",
+      "pod_name": "rook-ceph-osd-.*",
+      "container": "osd",
+      "tail_lines": 30
+    }
+  }
+}
