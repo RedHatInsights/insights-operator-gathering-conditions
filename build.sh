@@ -20,7 +20,6 @@ while true; do
   esac
 done
 
-mkdir -p $OUTPUT
 mkdir -p ${OUTPUT}/v1
 mkdir -p ${OUTPUT}/v2
 
