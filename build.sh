@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+# The following code is necessary to make CLI arguments work (with long flag names). 
+# These arguments are necessary to make the script configurable and testable.
 TEMP=$(getopt -o o: --long configs:,conditions:,output: \
               -n 'build' -- "$@")
 
