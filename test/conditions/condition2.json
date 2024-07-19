@@ -1,0 +1,18 @@
+{
+    "conditions": [
+      {
+        "type": "alert_is_firing",
+        "alert": {
+          "name": "TestCondition2"
+        }
+      }
+    ],
+    "gathering_functions": {
+      "containers_logs": {
+        "alert_name": "TestAlert2",
+        "tail_lines": 100,
+        "container": "alertmanager"
+      }
+    }
+  }
+  

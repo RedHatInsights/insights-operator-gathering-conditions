@@ -1,0 +1,15 @@
+{
+    "conditional_gathering_rules": [
+      "condition1",
+      "condition3"
+    ],
+    "container_logs": [
+        {
+            "namespace": "namespace1",
+            "pod_name_regex": ".*",
+            "messages": [
+                 "test message"
+            ]
+        } 
+    ]
+}
