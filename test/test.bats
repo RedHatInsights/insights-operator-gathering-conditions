@@ -17,9 +17,9 @@ setup() {
     assert [ $(jq '.rules | length' ${TEST_OUTPUT}/v1/rules.json) -eq 3 ]
     # check all conditions in resulting config
     run cat ${TEST_OUTPUT}/v1/rules.json
-    assert_line --partial 'Condition1'
-    assert_line --partial 'Condition2'
-    assert_line --partial 'Condition3'
+    assert_line --partial 'TestCondition1'
+    assert_line --partial 'TestCondition2'
+    assert_line --partial 'TestCondition3'
 }
 
 @test "test v2 configs conditions" {
@@ -32,14 +32,14 @@ setup() {
     assert [ $(jq '.conditional_gathering_rules | length' ${TEST_OUTPUT}/v2/config2.json) -eq 2 ]
     # check conditions in the first config
     run cat ${TEST_OUTPUT}/v2/config1.json
-    assert_line --partial 'Condition1'
-    assert_line --partial 'Condition2'
-    refute_line --partial 'Condition3'
+    assert_line --partial 'TestCondition1'
+    assert_line --partial 'TestCondition2'
+    refute_line --partial 'TestCondition3'
     # check conditions in the second config
     run cat ${TEST_OUTPUT}/v2/config2.json
-    assert_line --partial 'Condition1'
-    refute_line --partial 'Condition2'
-    assert_line --partial 'Condition3'
+    assert_line --partial 'TestCondition1'
+    refute_line --partial 'TestCondition2'
+    assert_line --partial 'TestCondition3'
 }
 
 @test "test v2 configs container_logs field" {
