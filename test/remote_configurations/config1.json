@@ -1,0 +1,7 @@
+{
+    "conditional_gathering_rules": [
+      "condition1",
+      "condition2"
+    ],
+    "container_logs": []
+}

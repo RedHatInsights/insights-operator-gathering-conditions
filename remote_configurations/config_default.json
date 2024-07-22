@@ -1,0 +1,14 @@
+{
+  "conditional_gathering_rules": [
+    "AlertmanagerFailedReload",
+    "AlertmanagerFailedToSendAlerts",
+    "APIRemovedInNextEUSReleaseInUse",
+    "KubePodCrashLooping",
+    "KubePodNotReady",
+    "PrometheusOperatorSyncFailed",
+    "PrometheusTargetSyncFailure",
+    "SamplesImagestreamImportFailing",
+    "ThanosRuleQueueIsDroppingAlerts"
+  ],
+  "container_logs": []
+}

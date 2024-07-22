@@ -26,6 +26,12 @@ Just execute the script:
 It will build the container image with the rules.
 
 
+## Testing
+
+`build.sh` script is tested using a Bats framework. In order to use them, you first need to download necessary dependencies by running `git submodule update --init --recursive`.
+
+Then you can run the tests with `test/test_helper/bats/bin/bats test/test.bats` from root directory of this repository.
+
 
 # Docker image
 

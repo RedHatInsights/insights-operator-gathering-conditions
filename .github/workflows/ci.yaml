@@ -23,3 +23,14 @@ jobs:
       - name: Run validator
         run: |
           python validate.py
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Run tests
+        run: |
+          test/test_helper/bats/bin/bats test/test.bats
