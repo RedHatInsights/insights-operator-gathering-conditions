@@ -11,6 +11,7 @@ if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 OUTPUT=./build
 CONDITIONS=./conditions
 CONFIGS=./remote_configurations
+CLUSTER_MAPPING=cluster-mapping.json
 
 while true; do
   case "$1" in
@@ -44,3 +45,5 @@ for config_template in ${CONFIGS}/*; do
     # build entire config with contents and the version
     jq --argjson contents "${contents}" --arg VERSION $VERSION '.version=$VERSION | .conditional_gathering_rules=$contents' $config_template > ${OUTPUT}/v2/$(basename $config_template)
 done
+
+cp ${CLUSTER_MAPPING} ${OUTPUT}/ 
