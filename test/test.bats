@@ -57,6 +57,13 @@ setup() {
 
 }
 
+@test "test cluster-mapping.json included" {
+    ./build.sh --conditions $TEST_CONDITIONS --output $TEST_OUTPUT --configs $TEST_CONFIGURATIONS
+    # check that cluster-mapping.json has been created
+    assert [ -f ${TEST_OUTPUT}/cluster-mapping.json ]
+
+}
+
 teardown() {
     rm -r $TEST_OUTPUT
 }

@@ -27,8 +27,9 @@ build/
         rules.json
     v2/
         *.json
+    cluster-mapping.json
 ```
 
 `build/v1/rules.json` is the remote configuration for OCP 4.16 and older. It contains only the conditional gathering rules.
 
-`build/v2/*.json` and [cluster-mapping.json](https://github.com/RedHatInsights/insights-operator-gathering-conditions-service/blob/main/cluster-mapping.json) comprise the remote configuration for OCP 4.17 and newer. The `cluster-mapping.json` file provides a mapping between OCP version ranges and `build/v2/*.json` files. Each `build/v2/*.json` file contains conditional gathering rules and container log requests for OCP versions defined in the `cluster-mapping.json` file.
+`build/v2/*.json` and `build/cluster-mapping.json` comprise the remote configuration for OCP 4.17 and newer. The `build/cluster-mapping.json` file provides a mapping between OCP version ranges and `build/v2/*.json` files. Each `build/v2/*.json` file contains conditional gathering rules and container log requests for OCP versions defined in the `build/cluster-mapping.json` file.
