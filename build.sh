@@ -23,9 +23,6 @@ while true; do
   esac
 done
 
-mkdir -p ${OUTPUT}/v1
-mkdir -p ${OUTPUT}/v2
-
 # Determine version
 NUMBER_OF_HEAD_TAGS=$(git tag --points-at HEAD | wc -l)
 if [ $NUMBER_OF_HEAD_TAGS -gt 1 ]; then
@@ -36,6 +33,10 @@ VERSION=$(git describe --tags | sed 's/\(.*\)-\(.*\)/\1+\2/')
 # Outputs:
 # 1.1.1 if HEAD has the 1.1.1 tag
 # 1.1.1-4+g3615c20 if HEAD is g3615c20, 4 commits ahead of the 1.1.1 tag
+
+# Create output directories
+mkdir -p ${OUTPUT}/v1
+mkdir -p ${OUTPUT}/v2
 
 # Build the conditions for v1 endpoint
 jq --arg VERSION $VERSION \
