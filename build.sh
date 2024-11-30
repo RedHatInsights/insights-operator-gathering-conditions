@@ -26,12 +26,22 @@ done
 mkdir -p ${OUTPUT}/v1
 mkdir -p ${OUTPUT}/v2
 
+# Determine version
+NUMBER_OF_HEAD_TAGS=$(git tag --points-at HEAD | wc -l)
+if [ $NUMBER_OF_HEAD_TAGS -gt 1 ]; then
+    echo "ERROR: Cannot determine version. HEAD has more than one tag."
+    exit 1
+fi
+VERSION=$(git describe --tags | sed 's/\(.*\)-\(.*\)/\1+\2/')
+# Outputs:
+# 1.1.1 if HEAD has the 1.1.1 tag
+# 1.1.1-4+g3615c20 if HEAD is g3615c20, 4 commits ahead of the 1.1.1 tag
+
 # Build the conditions for v1 endpoint
-VERSION=$(git describe --tags --abbrev=0)
 jq --arg VERSION $VERSION \
     -s '{ version: $VERSION, rules: map(.) }' ${CONDITIONS}/*.json > ${OUTPUT}/v1/rules.json
 
-# Build remote configurations
+# Build remote configurations for v2 endpoint
 for config_template in ${CONFIGS}/*; do
     # build JSON array with contents of all required conditions
     contents='['
