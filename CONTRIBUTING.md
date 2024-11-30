@@ -16,8 +16,6 @@ git submodule update --init --recursive
 
 ### Linting
 
-TODO: INSIGHTOCP-1965 - Use pre-commit in GitHub workflows
-
 ```shell script
 pre-commit run --all-files
 ```
@@ -25,6 +23,10 @@ pre-commit run --all-files
 ### Configuration Sources
 
 TBD (INSIGHTOCP-1967)
+
+```shell script
+python validate.py
+```
 
 ### build.sh
 
