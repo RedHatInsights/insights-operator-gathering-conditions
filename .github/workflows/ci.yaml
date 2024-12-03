@@ -20,7 +20,10 @@ jobs:
       - name: Download dependencies
         run: |
           pip3 install -r requirements.txt
-      - name: Run validator
+      - name: Linters
+        run: |
+          pre-commit run --all-files
+      - name: Validation
         run: |
           python validate.py
   test:

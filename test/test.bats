@@ -50,7 +50,7 @@ setup() {
     # check container_logs in the first config is empty
     run jq '.container_logs' ${TEST_OUTPUT}/v2/config1.json
     assert_output '[]'
-    # check container_logs in the second config   
+    # check container_logs in the second config
     run jq '.container_logs' ${TEST_OUTPUT}/v2/config2.json
     assert_line --partial 'namespace1'
     assert_line --partial 'test message'

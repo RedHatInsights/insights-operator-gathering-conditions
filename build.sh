@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-# The following code is necessary to make CLI arguments work (with long flag names). 
+# The following code is necessary to make CLI arguments work (with long flag names).
 # These arguments are necessary to make the script configurable and testable.
 TEMP=$(getopt -o o: --long configs:,conditions:,output: \
               -n 'build' -- "$@")
@@ -35,7 +35,7 @@ jq --arg VERSION $VERSION \
 for config_template in ${CONFIGS}/*; do
     # build JSON array with contents of all required conditions
     contents='['
-    while read -r condition; do 
+    while read -r condition; do
 	contents+=$(cat ${CONDITIONS}/${condition}.json)
 	contents+=','
     done < <(jq -r '.conditional_gathering_rules[]' $config_template)
@@ -46,4 +46,4 @@ for config_template in ${CONFIGS}/*; do
     jq --argjson contents "${contents}" --arg VERSION $VERSION '.version=$VERSION | .conditional_gathering_rules=$contents' $config_template > ${OUTPUT}/v2/$(basename $config_template)
 done
 
-cp ${CLUSTER_MAPPING} ${OUTPUT}/ 
+cp ${CLUSTER_MAPPING} ${OUTPUT}/
