@@ -1,0 +1,23 @@
+{
+  "conditional_gathering_rules": [
+    "AlertmanagerFailedReload",
+    "AlertmanagerFailedToSendAlerts",
+    "APIRemovedInNextEUSReleaseInUse",
+    "KubePodCrashLooping",
+    "KubePodNotReady",
+    "PrometheusOperatorSyncFailed",
+    "PrometheusTargetSyncFailure",
+    "SamplesImagestreamImportFailing",
+    "ThanosRuleQueueIsDroppingAlerts"
+  ],
+  "container_logs": [
+    {
+      "namespace": "openshift-kube-controller-manager",
+      "pod_name_regex": "kube-controller-manager.*",
+      "messages": [
+        "Internal error occurred: error resolving resource",
+        "syncing garbage collector with updated resources from discovery"
+      ]
+    }
+  ]
+}
