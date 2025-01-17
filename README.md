@@ -39,7 +39,7 @@ details).
   * A template for the remote configuration served by the `v1` API of the
     [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
 * `templates_v2/cluster_version_mapping.json`
-  [TODO: schema link]
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/cluster_version_mapping.schema.json)]
   * A mapping between cluster version ranges and remote configurations used by the
     [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
     for the `v2` API.
@@ -76,5 +76,5 @@ requires the following files to operate:
   [TODO: schema link]
   * Remote configurations returned by the `v2` API.
 * `build/cluster_mapping.json`
-  [TODO: schema link]
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/cluster_version_mapping.schema.json)]
   * A file mapping cluster version ranges to specific v2 remote configurations.
