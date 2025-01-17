@@ -28,25 +28,25 @@ Remote configuration data is stored in a modular way that is convenient for
 managing the data (see the [contributing documentation](CONTRIBUTING.md) for
 details).
 
-* `conditional_gathering_rules/*.json` -
-  A library of conditional gathering rules.
-  TODO: schema reference
-* `container_log_requests/*/*.json` -
-  A library of container log requests, organized by their source.
-  TODO: schema reference
-* `templates_v1/rules.json` -
-  A template for the remote configuration served by the `v1` API of the
-  [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
-  TODO: schema reference
-* `templates_v2/cluster_version_mapping.json` -
-  A mapping between cluster version ranges and remote configurations used by the
-  [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
-  for the `v2` API.
-  TODO: schema reference
-* `templates_v2/remote_configurations/*.json` -
-  Templates for remote configurations served by the `v2` API of the
-  [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
-  TODO: schema reference
+* `conditional_gathering_rules/*.json`
+  [TODO: schema link]
+  * A library of conditional gathering rules.
+* `container_log_requests/*/*.json`
+  [TODO: schema link]
+  * A library of container log requests, organized by their source.
+* `templates_v1/rules.json`
+  [TODO: schema link]
+  * A template for the remote configuration served by the `v1` API of the
+    [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
+* `templates_v2/cluster_version_mapping.json`
+  [TODO: schema link]
+  * A mapping between cluster version ranges and remote configurations used by the
+    [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
+    for the `v2` API.
+* `templates_v2/remote_configurations/*.json`
+  [TODO: schema link]
+  * Templates for remote configurations served by the `v2` API of the
+    [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
 
 
 ## Build
@@ -69,12 +69,12 @@ git fetch -p origin
 The [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
 requires the following files to operate:
 
-* `build/v1/rules.json` -
-  The remote configuration returned by the `v1` API.
-  TODO: schema reference
-* `build/v2/*.json` -
-  Remote configurations returned by the `v2` API.
-  TODO: schema reference
-* `build/cluster_mapping.json` -
-  A file mapping cluster version ranges to specific v2 remote configurations.
-  TODO: schema reference
+* `build/v1/rules.json`
+  [TODO: schema link]
+  * The remote configuration returned by the `v1` API.
+* `build/v2/*.json`
+  [TODO: schema link]
+  * Remote configurations returned by the `v2` API.
+* `build/cluster_mapping.json`
+  [TODO: schema link]
+  * A file mapping cluster version ranges to specific v2 remote configurations.
