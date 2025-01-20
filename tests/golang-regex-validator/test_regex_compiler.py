@@ -11,8 +11,12 @@ _GO_TOOL_FILE = _FOLDER.parent.parent / "golang-regex-validator/regexCompiler.go
 INVALID_REGEX = "[\\]"
 
 
+def test_can_locate_go_tool_file():
+    """Ensure we point to the right file"""
+    assert _GO_TOOL_FILE.exists()
+
+
 def invoke(input: str) -> subprocess.CompletedProcess:
-    assert _GO_TOOL_FILE.exists()  # ensure we point to the right file
     return subprocess.run(["go", "run", _GO_TOOL_FILE], input=input, capture_output=True, encoding="utf-8")
 
 
