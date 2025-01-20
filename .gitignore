@@ -1,2 +1,8 @@
 .env/
 build/*
+
+# Python files
+__pycache__
+
+# IDEs
+.idea
