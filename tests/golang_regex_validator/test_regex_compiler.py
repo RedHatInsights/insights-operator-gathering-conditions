@@ -6,7 +6,7 @@ import pytest
 
 
 _FOLDER = Path(path.abspath(__file__)).parent
-_GO_TOOL_FILE = _FOLDER.parent.parent / "golang-regex-validator/regexCompiler.go"
+_GO_TOOL_FILE = _FOLDER.parent.parent / "golang_regex_validator/regexCompiler.go"
 
 INVALID_REGEX = "[\\]"
 
