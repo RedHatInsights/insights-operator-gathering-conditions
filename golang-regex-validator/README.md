@@ -1,7 +1,8 @@
 
 # Golang Regex Validator
 
-This tool is aimed to validate Golang Regex expressions.
+This tool reads a Golang regular expression from the standard input and checks whether it can be compiled.
+The result is indicated by the exit status.
 
 To use it:
 
