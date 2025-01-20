@@ -6,12 +6,13 @@ import pytest
 
 
 _FOLDER = Path(path.abspath(__file__)).parent
-_GO_TOOL_FILE = _FOLDER.parent / "regexCompiler.go"
+_GO_TOOL_FILE = _FOLDER.parent.parent / "golang-regex-validator/regexCompiler.go"
 
 INVALID_REGEX = "[\\]"
 
 
 def invoke(input: str) -> subprocess.CompletedProcess:
+    assert _GO_TOOL_FILE.exists()  # ensure we point to the right file
     return subprocess.run(["go", "run", _GO_TOOL_FILE], input=input, capture_output=True, encoding="utf-8")
 
 
