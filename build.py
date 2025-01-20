@@ -6,7 +6,6 @@ import json
 import pathlib
 import sys
 
-
 OUTPUT = "./build"
 
 VERSION = sys.argv[1]
@@ -36,7 +35,9 @@ def expand_glob_list(globs):
 
 def produce_v2_config(src_path, output_dir):
     config_source = load_json_file(src_path)
-    config = expand_remote_config_source(config_source, ["conditional_gathering_rules", "container_logs"])
+    config = expand_remote_config_source(
+        config_source, ["conditional_gathering_rules", "container_logs"]
+    )
     dst_path = output_dir / src_path.name
     dst_path.write_text(json.dumps(config))
 
