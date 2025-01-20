@@ -8,8 +8,6 @@ To use it:
 
 ```go run regexCompiler.go```
 
-## Test
+## Tests
 
-The tests included in this folder are just for validating that tool
-is compliant with the design, but are not validating any of the expressions
-from the data contained in this repo.
+Tests validating the tool itself are implemented using `pytest` and located in `tests/golang_regex_validator`. Other `pytest` tests then use the tool to validate data contained in this repository.
