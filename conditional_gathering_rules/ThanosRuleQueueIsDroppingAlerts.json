@@ -1,10 +1,10 @@
 {
   "conditions": [
     {
-      "type": "alert_is_firing",
       "alert": {
         "name": "ThanosRuleQueueIsDroppingAlerts"
-      }
+      },
+      "type": "alert_is_firing"
     }
   ],
   "gathering_functions": {

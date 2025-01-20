@@ -1,35 +1,47 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "cluster_version_mapping.schema.json",
-    "title": "Cluster Version Mapping for Rapid Recommendations",
-    "descriptions": "A data structure used by the Insights Operator Gathering Conditions Service v2 API to map Insights Operator versions to specific remote configurations for those versions.",
-    "examples": [
-        [
-            ["1.0.0", "safe_1.json"],
-            ["2.0.0-0", "experimental_1.json"],
-            ["2.0.0", "safe_2.json"],
-            ["3.0.0-0", "experimental_2.json"]
-        ]
+  "$id": "cluster_version_mapping.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A sequence of pairs specifying OpenShift version intervals and specific remote configurations to be used for those intervals. The sequence of pairs in the array must specify a strictly increasing sequence of versions (this requirement is not imposed by the schema itself). An interval is defined by two consecutive pairs.",
+  "descriptions": "A data structure used by the Insights Operator Gathering Conditions Service v2 API to map Insights Operator versions to specific remote configurations for those versions.",
+  "examples": [
+    [
+      [
+        "1.0.0",
+        "safe_1.json"
+      ],
+      [
+        "2.0.0-0",
+        "experimental_1.json"
+      ],
+      [
+        "2.0.0",
+        "safe_2.json"
+      ],
+      [
+        "3.0.0-0",
+        "experimental_2.json"
+      ]
+    ]
+  ],
+  "items": {
+    "description": "A pair specifying the start of an OpenShift version interval and a specific remote configuration to be used for a version interval that starts at the version (inclusive) and ends at the version specified by the next pair (non-inclusive). The interval specified by the last pair is unbounded.",
+    "maxItems": 2,
+    "minItems": 2,
+    "prefixItems": [
+      {
+        "description": "A semantic version string that specifies the start of a version interval (inclusive).",
+        "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+        "type": "string"
+      },
+      {
+        "description": "The file name of a pre-generated remote configuration that the Insights Operator Conditional Gathering Service v2 API will return for versions in the interval represented by the pair.",
+        "type": "string"
+      }
     ],
-    "type": "array",
-    "description": "A sequence of pairs specifying OpenShift version intervals and specific remote configurations to be used for those intervals. The sequence of pairs in the array must specify a strictly increasing sequence of versions (this requirement is not imposed by the schema itself). An interval is defined by two consecutive pairs.",
-    "uniqueItems": true,
-    "items": {
-        "type": "array",
-        "description": "A pair specifying the start of an OpenShift version interval and a specific remote configuration to be used for a version interval that starts at the version (inclusive) and ends at the version specified by the next pair (non-inclusive). The interval specified by the last pair is unbounded.",
-        "minItems": 2,
-        "maxItems": 2,
-        "prefixItems": [
-            {
-                "type": "string",
-                "description": "A semantic version string that specifies the start of a version interval (inclusive).",
-                "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
-            },
-            {
-                "type": "string",
-                "description": "The file name of a pre-generated remote configuration that the Insights Operator Conditional Gathering Service v2 API will return for versions in the interval represented by the pair."
-            }
-        ]
-    },
-    "minItems": 1
+    "type": "array"
+  },
+  "minItems": 1,
+  "title": "Cluster Version Mapping for Rapid Recommendations",
+  "type": "array",
+  "uniqueItems": true
 }
