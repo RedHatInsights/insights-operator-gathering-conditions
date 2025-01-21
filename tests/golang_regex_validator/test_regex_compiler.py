@@ -1,24 +1,8 @@
-import subprocess
-from os import path
-from pathlib import Path
-
 import pytest
 
-_FOLDER = Path(path.abspath(__file__)).parent
-_GO_TOOL_FILE = _FOLDER.parent.parent / "golang_regex_validator/regexCompiler.go"
+from tests.golang_regex_validator import GolangRegexValidator
 
 INVALID_REGEX = "[\\]"
-
-
-def test_can_locate_go_tool_file():
-    """Ensure we point to the right file"""
-    assert _GO_TOOL_FILE.exists()
-
-
-def invoke(input: str) -> subprocess.CompletedProcess:
-    return subprocess.run(
-        ["go", "run", _GO_TOOL_FILE], input=input, capture_output=True, encoding="utf-8"
-    )
 
 
 @pytest.mark.parametrize(
@@ -28,11 +12,11 @@ def invoke(input: str) -> subprocess.CompletedProcess:
         (INVALID_REGEX, False),
     ],
 )
-def test_exit_status(regex, valid):
-    cp = invoke(regex)
+def test_exit_status(golang_regex_validator: GolangRegexValidator, regex: str, valid: bool):
+    cp = golang_regex_validator.run(regex)
     assert cp.returncode == 0 if valid is True else cp.returncode != 0
 
 
-def test_errors_are_on_stderr():
-    cp = invoke(INVALID_REGEX)
+def test_errors_are_on_stderr(golang_regex_validator: GolangRegexValidator):
+    cp = golang_regex_validator.run(INVALID_REGEX)
     assert "panic: regexp" in cp.stderr
