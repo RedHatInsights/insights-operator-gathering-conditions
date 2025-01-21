@@ -51,30 +51,47 @@ details).
 
 ## Build
 
-The [`build.sh`](./build.sh) script expands templates in `templates_v1` and `templates_v2`
-into files expected by the
+The [`build.py`](./build.py) script expands templates in `templates_v1` and `templates_v2`
+into files needed by the
 [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
 
+Python and Go are required.
+We expect this project to work on most versions of both.
+To check the specific version we test and use,
+see the [CI workflow configuration](.github/workflows/ci.yaml).
+
 ```shell script
+# clone repo
 git clone -o upstream https://github.com/RedHatInsights/insights-operator-gathering-conditions
 cd insights-operator-gathering-conditions
-# the build.sh script needs version tags
-git fetch -p origin
-/bin/bash build.sh
+git fetch -p upstream   # the build.py script needs version tags
+
+# prepare runtime environment
+python3 -m venv .env
+source .env/bin/activate
+pip3 install -r requirements.txt
+
+# run the build script
+python build.py
 ```
+
+The tool supports a few command line arguments, mostly for testing purposes. Run `python build.py --help` for details.
 
 
 ## Generated Files
 
-The [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
-requires the following files to operate:
+The [`build.py`](./build.py) script generates the following files:
 
 * `build/v1/rules.json`
   [TODO: schema link]
   * The remote configuration returned by the `v1` API.
-* `build/v2/*.json`
-  [TODO: schema link]
-  * Remote configurations returned by the `v2` API.
-* `build/cluster_mapping.json`
+* `build/v2/cluster_mapping.json`
   [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/cluster_version_mapping.schema.json)]
   * A file mapping cluster version ranges to specific v2 remote configurations.
+* `build/v2/remote_configurations/*.json`
+  [TODO: schema link]
+  * Remote configurations returned by the `v2` API.
+
+Note that the [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
+needs the files in a slightly different structure at the moment. The differences are handled in its
+[`get_condtions.sh`](https://github.com/redhatinsights/insights-operator-gathering-conditions-service/blob/main/get_conditions.sh) script.

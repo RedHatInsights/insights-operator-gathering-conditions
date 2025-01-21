@@ -1,0 +1,7 @@
+[
+    ["4.0.0", "config_empty.json"],
+    ["4.1.0", "config_all_gathering_rules.json"],
+    ["4.2.0", "config_all_container_logs.json"],
+    ["4.3.0", "config_multiple_patterns.json"],
+    ["4.4.0", "config_duplicates.json"]
+]

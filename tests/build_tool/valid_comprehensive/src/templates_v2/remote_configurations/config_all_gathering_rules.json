@@ -1,0 +1,6 @@
+{
+  "conditional_gathering_rules": [
+    "conditional_gathering_rules/*.json"
+  ],
+  "container_logs": []
+}

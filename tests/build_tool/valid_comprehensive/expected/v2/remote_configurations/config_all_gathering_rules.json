@@ -1,0 +1,102 @@
+{
+  "conditional_gathering_rules": [
+    {
+      "conditions": [
+        {
+          "alert": {
+            "name": "KubePodCrashLooping"
+          },
+          "type": "alert_is_firing"
+        }
+      ],
+      "gathering_functions": {
+        "logs_of_namespace": {
+          "namespace": "extra",
+          "tail_lines": 100
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "alert": {
+            "name": "KubePodCrashLooping"
+          },
+          "type": "alert_is_firing"
+        }
+      ],
+      "gathering_functions": {
+        "logs_of_namespace": {
+          "namespace": "sample_a1",
+          "tail_lines": 100
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "alert": {
+            "name": "KubePodCrashLooping"
+          },
+          "type": "alert_is_firing"
+        }
+      ],
+      "gathering_functions": {
+        "logs_of_namespace": {
+          "namespace": "sample_a1",
+          "tail_lines": 100
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "alert": {
+            "name": "KubePodCrashLooping"
+          },
+          "type": "alert_is_firing"
+        }
+      ],
+      "gathering_functions": {
+        "logs_of_namespace": {
+          "namespace": "sample_a2",
+          "tail_lines": 100
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "alert": {
+            "name": "KubePodCrashLooping"
+          },
+          "type": "alert_is_firing"
+        }
+      ],
+      "gathering_functions": {
+        "logs_of_namespace": {
+          "namespace": "sample_b1",
+          "tail_lines": 100
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "alert": {
+            "name": "KubePodCrashLooping"
+          },
+          "type": "alert_is_firing"
+        }
+      ],
+      "gathering_functions": {
+        "logs_of_namespace": {
+          "namespace": "sample_b2",
+          "tail_lines": 100
+        }
+      }
+    }
+  ],
+  "container_logs": [],
+  "version": "0.0.1"
+}
