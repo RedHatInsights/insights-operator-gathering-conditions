@@ -1,17 +1,17 @@
 {
   "conditions": [
     {
-      "type": "alert_is_firing",
       "alert": {
         "name": "PrometheusOperatorSyncFailed"
-      }
+      },
+      "type": "alert_is_firing"
     }
   ],
   "gathering_functions": {
     "containers_logs": {
       "alert_name": "PrometheusOperatorSyncFailed",
-      "tail_lines": 50,
-      "container": "prometheus-operator"
+      "container": "prometheus-operator",
+      "tail_lines": 50
     }
   }
 }
