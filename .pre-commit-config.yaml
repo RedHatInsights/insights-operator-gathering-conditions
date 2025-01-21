@@ -16,3 +16,10 @@ repos:
       args:
       - '--fix'
     - id: ruff-format
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.63.4
+    hooks:
+      - id: golangci-lint-full
+        pass_filenames: true
+        args: ["--enable=goimports,nilerr,prealloc,revive,unconvert,whitespace"]
+      - id: golangci-lint-config-verify

@@ -40,4 +40,4 @@ jobs:
           pip3 install -r requirements.txt
       - name: Test
         run: |
-          echo "To be done"
+          pytest
