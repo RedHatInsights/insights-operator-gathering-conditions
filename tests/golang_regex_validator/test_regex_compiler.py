@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 
-
 _FOLDER = Path(path.abspath(__file__)).parent
 _GO_TOOL_FILE = _FOLDER.parent.parent / "golang_regex_validator/regexCompiler.go"
 
@@ -17,7 +16,9 @@ def test_can_locate_go_tool_file():
 
 
 def invoke(input: str) -> subprocess.CompletedProcess:
-    return subprocess.run(["go", "run", _GO_TOOL_FILE], input=input, capture_output=True, encoding="utf-8")
+    return subprocess.run(
+        ["go", "run", _GO_TOOL_FILE], input=input, capture_output=True, encoding="utf-8"
+    )
 
 
 @pytest.mark.parametrize(
