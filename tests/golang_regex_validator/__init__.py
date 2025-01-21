@@ -12,7 +12,7 @@ class GolangRegexValidator:
 
     FILE: Path = PROJECT_ROOT / "golang_regex_validator/regexCompiler.go"
 
-    def run(self, input: str):
+    def run(self, input: str) -> subprocess.CompletedProcess:
         return subprocess.run(
             ["go", "run", self.FILE], input=input, capture_output=True, encoding="utf-8"
         )
