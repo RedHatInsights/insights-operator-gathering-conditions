@@ -1,17 +1,17 @@
 {
   "conditions": [
     {
-      "type": "alert_is_firing",
       "alert": {
         "name": "KubePodCrashLooping"
-      }
+      },
+      "type": "alert_is_firing"
     }
   ],
   "gathering_functions": {
     "containers_logs": {
       "alert_name": "KubePodCrashLooping",
-      "tail_lines": 20,
-      "previous": true
+      "previous": true,
+      "tail_lines": 20
     }
   }
 }
