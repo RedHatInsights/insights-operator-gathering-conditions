@@ -10,9 +10,11 @@ import sys
 
 from deepdiff import DeepDiff
 
+
 def load_json(path):
     with open(path) as fd:
         return json.load(fd)
+
 
 a = load_json(sys.argv[1])
 b = load_json(sys.argv[2])

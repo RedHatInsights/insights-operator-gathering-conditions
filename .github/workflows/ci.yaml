@@ -2,24 +2,42 @@ name: ci
 
 on: [push, pull_request]
 
+env:
+  PYTHON_VERSION: "3.11"
+  GO_VERSION: "1.22"
+
 jobs:
   validate:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.x]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          python-version: ${{ env.PYTHON_VERSION }}
       - name: Download dependencies
         run: |
           pip3 install -r requirements.txt
       - name: Linters
         run: |
           pre-commit run --all-files
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Download dependencies
+        run: |
+          pip3 install -r requirements.txt
+      - name: Test
+        run: |
+          echo "To be done"
