@@ -1,7 +1,5 @@
-from os import path
 from pathlib import Path
 
-_FOLDER: Path = Path(path.abspath(__file__)).parent
-_PROJECT_ROOT: Path = _FOLDER.parent.parent
+from tests import PROJECT_ROOT
 
-CONTAINER_LOG_REQUESTS: Path = _PROJECT_ROOT / "container_log_requests"
+CONTAINER_LOG_REQUESTS: Path = PROJECT_ROOT / "container_log_requests"
