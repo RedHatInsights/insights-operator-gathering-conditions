@@ -9,3 +9,10 @@ repos:
           - --indent=2
           - --autofix
         exclude: cluster_version_mapping.json
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.1
+    hooks:
+    - id: ruff
+      args:
+      - '--fix'
+    - id: ruff-format
