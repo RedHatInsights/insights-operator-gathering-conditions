@@ -35,4 +35,4 @@ def test_exit_status(regex, valid):
 
 def test_errors_are_on_stderr():
     cp = invoke(INVALID_REGEX)
-    assert cp.stderr != None
+    assert "panic: regexp" in cp.stderr
