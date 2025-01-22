@@ -1,0 +1,41 @@
+{
+  "$id": "remote_configuration_v2_template",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Config template files stored as object which contain list of conditional gathering rules and list of container logs",
+  "example": {
+    "conditional_gathering_rules": [
+      "conditional_gathering_rules/rule1.json",
+      "conditional_gathering_rules/rule2.json",
+      "conditional_gathering_rules/subdir/rule3.json"
+    ],
+    "container_logs": [
+      "container_log_requests/manual/kube_controller_manager_logs_gatherer.json"
+    ]
+  },
+  "properties": {
+    "conditional_gathering_rules": {
+      "description": "Array of paths to conditional gathering rules",
+      "items": {
+        "description": "Path to conditional gathering rule",
+        "pattern": "^conditional_gathering_rules\\/(.+\\/)*[^\\/]+\\.json$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "container_logs": {
+      "description": "Array of paths to container logs",
+      "items": {
+        "description": "Path to container logs gatherer",
+        "pattern": "^container_log_requests/manual\\/(.+\\/)*[^\\/]+\\.json$",
+        "type": "string"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "conditional_gathering_rules",
+    "container_logs"
+  ],
+  "type": "object"
+}

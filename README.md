@@ -44,7 +44,7 @@ details).
     [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
     for the `v2` API.
 * `templates_v2/remote_configurations/*.json`
-  [TODO: schema link]
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v2_template.schema.json)]
   * Templates for remote configurations served by the `v2` API of the
     [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
 
