@@ -9,10 +9,10 @@
         {
           "conditions": [
             {
-              "type": "alert_is_firing",
               "alert": {
                 "name": "APIRemovedInNextEUSReleaseInUse"
-              }
+              },
+              "type": "alert_is_firing"
             }
           ],
           "gathering_functions": {
@@ -24,8 +24,6 @@
       ]
     }
   ],
-  "type": "object",
-  "required": ["rules"],
   "properties": {
     "rules": {
       "$ref": "gathering_rules.schema.json"
@@ -34,5 +32,9 @@
       "type": "string"
     }
   },
-  "title": "Remote configuration for Conditional Gathering"
+  "required": [
+    "rules"
+  ],
+  "title": "Remote configuration for Conditional Gathering",
+  "type": "object"
 }
