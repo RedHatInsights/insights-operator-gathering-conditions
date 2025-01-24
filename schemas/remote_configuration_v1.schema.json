@@ -1,8 +1,7 @@
 {
   "$id": "remote_configuration_v1.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "An object containing the set of rules used by the conditional gatherer.",
-  "descriptions": "A data structure used by the Insights Operator Gathering Conditions Service v1 API to return the remote configurations for the conditional gathering.",
+  "description": "A data structure used by the Insights Operator Gathering Conditions Service v1 API to return the remote configurations for the conditional gathering.",
   "examples": [
     {
       "rules": [
@@ -33,7 +32,8 @@
     }
   },
   "required": [
-    "rules"
+    "rules",
+    "version"
   ],
   "title": "Remote configuration for Conditional Gathering",
   "type": "object"

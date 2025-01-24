@@ -1,8 +1,7 @@
 {
   "$id": "gathering_rules.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "array of rules for conditional gatherer",
-  "descriptions": "Gathering rules for conditional gatherer",
+  "description": "Gathering rules for conditional gatherer",
   "examples": [
     [
       {
