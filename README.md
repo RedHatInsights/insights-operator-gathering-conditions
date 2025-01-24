@@ -35,7 +35,7 @@ details).
   [TODO: schema link]
   * A library of container log requests, organized by their source.
 * `templates_v1/rules.json`
-  [TODO: schema link]
+  [schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v1_template.schema.json)
   * A template for the remote configuration served by the `v1` API of the
     [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
 * `templates_v2/cluster_version_mapping.json`
@@ -44,7 +44,7 @@ details).
     [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
     for the `v2` API.
 * `templates_v2/remote_configurations/*.json`
-  [TODO: schema link]
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v2_template.schema.json)]
   * Templates for remote configurations served by the `v2` API of the
     [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
 
