@@ -23,7 +23,7 @@
       "type": "array"
     },
     "container_logs": {
-      "description": "Array of glob patterns matching conditional gathering rules to be included in the configuration file. The glob patterns are relative to the source data (repository) root.",
+      "description": "Array of glob patterns matching container log requests to be included in the configuration file. The glob patterns are relative to the source data (repository) root.",
       "items": {
         "description": "A glob pattern selecting container log requests",
         "pattern": "^container_log_requests/[^/]+/[^/]+\\.json$",
