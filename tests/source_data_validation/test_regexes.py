@@ -25,9 +25,9 @@ def get_message_filters():
 
 @pytest.mark.parametrize("name", get_pod_name_regexes())
 def test_pod_names_are_valid(golang_regex_validator, name):
-    assert golang_regex_validator.run(name).returncode == 0
+    assert golang_regex_validator.run(name).returncode == 0, f"Invalid regex {repr(name)}"
 
 
 @pytest.mark.parametrize("filter", get_message_filters())
 def test_message_filters(golang_regex_validator, filter):
-    assert golang_regex_validator.run(filter).returncode == 0
+    assert golang_regex_validator.run(filter).returncode == 0, f"Invalid regex {repr(filter)}"
