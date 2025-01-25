@@ -20,6 +20,11 @@ def test_success(build_tool_validator, tmpdir, success_test_case):
     # exit status
     assert cp.returncode == 0
 
+    # logging
+    assert "Remote configuration version: 0.0.1" in cp.stdout
+    assert str(success_test_case) in cp.stdout
+    assert str(tmpdir) in cp.stdout
+
     # generated files
     build_tool_validator.assert_same_config_dirs(tmpdir, success_test_case / "expected")
 
