@@ -29,15 +29,15 @@ managing the data (see the [contributing documentation](CONTRIBUTING.md) for
 details).
 
 * `conditional_gathering_rules/*.json`
-  [TODO: schema link]
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/gathering_rule.schema.json)]
   * A library of conditional gathering rules.
 * `container_log_requests/*/*.json`
-  [TODO: schema link]
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/container_log.schema.json)]
   * A library of container log requests, organized by their source.
 * `templates_v1/rules.json`
-  [schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v1_template.schema.json)
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v1_template.schema.json)]
   * A template for the remote configuration served by the `v1` API of the
-    [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
+    [[Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)].
 * `templates_v2/cluster_version_mapping.json`
   [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/cluster_version_mapping.schema.json)]
   * A mapping between cluster version ranges and remote configurations used by the
@@ -83,10 +83,10 @@ The tool supports a few command line arguments, mostly for testing purposes. Run
 The [`build.py`](./build.py) script generates the following files:
 
 * `build/v1/rules.json`
-  [TODO: schema link]
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v1.schema.json)]
   * The remote configuration returned by the `v1` API.
 * `build/v2/*.json`
-  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v2_template.schema.json)]
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v2.schema.json)]
   * Remote configurations returned by the `v2` API.
 * `build/cluster_mapping.json`
   [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/cluster_version_mapping.schema.json)]
