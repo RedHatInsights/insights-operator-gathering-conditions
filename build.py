@@ -121,10 +121,10 @@ class RemoteConfigurations:
 
     @staticmethod
     def _write_configs(outputdir, configs):
-        for filename in configs:
+        for filename, config in configs.items():
             filepath = outputdir / filename
             logger.info(f"Writing config: {filepath}")
-            filepath.write_text(json.dumps(configs[filename]))
+            filepath.write_text(json.dumps(config))
 
     @staticmethod
     def parse_version_from_git(raw_version):

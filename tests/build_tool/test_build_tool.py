@@ -1,4 +1,3 @@
-import pathlib
 import shutil
 
 import pytest
@@ -6,12 +5,13 @@ import pytest
 import build
 
 
-def test_success(build_tool_validator, tmpdir, success_test_case):
+def test_success(build_tool_validator, tmp_path, success_test_case):
+    outputdir = tmp_path / "output"
     cp = build_tool_validator.run(
         "--sourcedir",
         success_test_case / "src",
         "--outputdir",
-        tmpdir,
+        outputdir,
         # each test case could define its own version in a dedicated file if needed.
         "--version",
         "0.0.1",
@@ -23,28 +23,29 @@ def test_success(build_tool_validator, tmpdir, success_test_case):
     # logging
     assert "Remote configuration version: 0.0.1" in cp.stdout
     assert str(success_test_case) in cp.stdout
-    assert str(tmpdir) in cp.stdout
+    assert str(outputdir) in cp.stdout
 
     # generated files
-    build_tool_validator.assert_same_config_dirs(tmpdir, success_test_case / "expected")
+    build_tool_validator.assert_same_config_dirs(outputdir, success_test_case / "expected")
 
 
-def test_idempotency(build_tool_validator, tmpdir, test_case_dir):
+def test_idempotency(build_tool_validator, tmp_path, test_case_dir):
     sample_test_case = test_case_dir / "valid_comprehensive"
+    outputdir = tmp_path / "output"
 
-    args = ["--sourcedir", sample_test_case / "src", "--outputdir", tmpdir, "--version", "0.0.1"]
+    args = ["--sourcedir", sample_test_case / "src", "--outputdir", outputdir, "--version", "0.0.1"]
 
     cp = build_tool_validator.run(*args)
     cp = build_tool_validator.run(*args)
     assert cp.returncode == 0
-    build_tool_validator.assert_same_config_dirs(tmpdir, sample_test_case / "expected")
+    build_tool_validator.assert_same_config_dirs(outputdir, sample_test_case / "expected")
 
 
-def test_get_version_without_git_repo(build_tool_validator, tmpdir, test_case_dir):
+def test_get_version_without_git_repo(build_tool_validator, tmp_path, test_case_dir):
     """Test that --version can supply a version when the source directory isn't in a Git repo."""
     sample_test_case = test_case_dir / "valid_comprehensive"
-    sourcedir = pathlib.Path(tmpdir) / "src"
-    outputdir = pathlib.Path(tmpdir) / "build"
+    sourcedir = tmp_path / "src"
+    outputdir = tmp_path / "build"
 
     # copy a sample source dir to a directory outside of any Git repo
     shutil.copytree(sample_test_case / "src", sourcedir)
