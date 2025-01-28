@@ -73,7 +73,7 @@ requires the following files to operate:
   [TODO: schema link]
   * The remote configuration returned by the `v1` API.
 * `build/v2/*.json`
-  [TODO: schema link]
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v2_template.schema.json)]
   * Remote configurations returned by the `v2` API.
 * `build/cluster_mapping.json`
   [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/cluster_version_mapping.schema.json)]
