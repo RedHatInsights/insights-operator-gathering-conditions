@@ -1,0 +1,46 @@
+{
+  "conditional_gathering_rules": [],
+  "container_logs": [
+    {
+      "messages": [
+        "sample message 1-1",
+        "sample message 1-2"
+      ],
+      "namespace": "sample-request-1",
+      "pod_name_regex": "pod-prefix-1-.*"
+    },
+    {
+      "messages": [
+        "sample message 2-1",
+        "sample message 2-2"
+      ],
+      "namespace": "sample-request-2",
+      "pod_name_regex": "pod-prefix-2-.*"
+    },
+    {
+      "messages": [
+        "sample message 1-1",
+        "sample message 1-2"
+      ],
+      "namespace": "sample-request-1",
+      "pod_name_regex": "pod-prefix-1-.*"
+    },
+    {
+      "messages": [
+        "sample message 3-1",
+        "sample message 3-2"
+      ],
+      "namespace": "sample-request-3",
+      "pod_name_regex": "pod-prefix-3-.*"
+    },
+    {
+      "messages": [
+        "sample message 4-1",
+        "sample message 4-2"
+      ],
+      "namespace": "sample-request-4",
+      "pod_name_regex": "pod-prefix-4-.*"
+    }
+  ],
+  "version": "0.0.1"
+}

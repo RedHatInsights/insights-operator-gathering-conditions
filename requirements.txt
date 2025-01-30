@@ -1,4 +1,8 @@
+deepdiff
+GitPython
 jsonschema
 pre-commit
 pytest
+pytest-cov
+semver
 termcolor
