@@ -85,13 +85,15 @@ The [`build.py`](./build.py) script generates the following files:
 * `build/v1/rules.json`
   [TODO: schema link]
   * The remote configuration returned by the `v1` API.
-* `build/v2/cluster_mapping.json`
+* `build/v2/*.json`
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v2_template.schema.json)]
+  * Remote configurations returned by the `v2` API.
+* `build/cluster_mapping.json`
   [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/cluster_version_mapping.schema.json)]
   * A file mapping cluster version ranges to specific v2 remote configurations.
 * `build/v2/remote_configurations/*.json`
   [TODO: schema link]
   * Remote configurations returned by the `v2` API.
-
 Note that the [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
 needs the files in a slightly different structure at the moment. The differences are handled in its
 [`get_condtions.sh`](https://github.com/redhatinsights/insights-operator-gathering-conditions-service/blob/main/get_conditions.sh) script.
