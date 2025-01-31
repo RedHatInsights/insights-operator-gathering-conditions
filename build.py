@@ -5,11 +5,14 @@ import argparse
 import json
 import logging
 import logging.config
+import os
 import pathlib
 import shutil
 
 import git
+import jsonschema
 import semver
+import jsonref
 
 logger = logging.getLogger(__name__)
 
@@ -97,9 +100,32 @@ class RemoteConfigurations:
         self._write_v2(outputdir / "v2")
 
     def _write_v1(self, outputdir):
+        self._validate_config_v1_aginst_schema()
         logger.info("Writing v1 configs")
         outputdir.mkdir(parents=True, exist_ok=True)
         self._write_configs(outputdir, self.configs_v1)
+    
+    def _validate_config_v1_aginst_schema(self):
+        
+        schema_path = "schemas/remote_configuration_v1.schema.json"
+        schema_dir = os.path.abspath("schemas")
+
+        # Logging the base URI for the schema directory
+        logger.info(f"Validation of config_v1 against schema")
+
+        # Open and load the main schema with jsonref
+        with open(schema_path, 'r') as schema_file:
+            schema_with_references = jsonref.load(schema_file, base_uri=f"file://{schema_dir}/")
+
+        try:
+            jsonschema.validate(instance=self.configs_v1["rules.json"], schema=schema_with_references)
+            logger.info("Validation successful.")
+        except jsonschema.ValidationError as e:
+            logger.error(f"❌ JSON validation error: {e.message}")
+            exit(e)
+        except jsonschema.SchemaError as e:
+            logger.error(f"❌ Schema error: {e.message}")
+            exit(e)
 
     def _write_v2(self, outputdir):
         logger.info("Writing v2 configs")
@@ -167,8 +193,7 @@ def parse_arguments():
         help="Configuration version. Defaults to the setuptools_scm version.",
     )
     return parser.parse_args()
-
-
+            
 def main():
     args = parse_arguments()
     remote_configs = RemoteConfigurations(args.sourcedir, args.version)
