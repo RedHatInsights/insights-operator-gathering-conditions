@@ -1,41 +1,30 @@
 import json
+import pytest
 
 from jsonschema import validate
 
 from tests.source_data_validation import (
-    CLUSTER_MAPPING,
-    CLUSTER_MAPPING_SCHEMA,
-    CONTAINER_LOG_REQUESTS,
-    CONTAINER_LOG_SCHEMA,
-    GATHERING_RULE_SCHEMA,
-    GATHERING_RULES,
-    REMOTE_CONFIGURATIONS,
-    REMOTE_CONFIGURATIONS_V2_TEMPLATE_SCHEMA,
+    CLUSTER_MAPPING_PATH,
+    cluster_mapping_schema,
+    container_log_requests,
+    container_log_schema,
+    gathering_rules,
+    gathering_rule_schema,
+    remote_configurations,
+    remote_configurations_v2_template_schema,
 )
 
 
-def test_cluster_mapping_schema():
-    schema = json.loads(CLUSTER_MAPPING_SCHEMA.read_text())
-    mapping = json.loads(CLUSTER_MAPPING.read_text())
-    validate(mapping, schema)
+def files_and_schemas_to_validate():
+    files_and_schemas = []
+    files_and_schemas += [(CLUSTER_MAPPING_PATH, cluster_mapping_schema())]
+    files_and_schemas += [(log_file, container_log_schema()) for log_file in container_log_requests()]
+    files_and_schemas += [(rules_file, gathering_rule_schema()) for rules_file in gathering_rules()]
+    files_and_schemas += [(config_file, remote_configurations_v2_template_schema()) for config_file in remote_configurations()]
+    return files_and_schemas
 
 
-def test_container_log_schema():
-    schema = json.loads(CONTAINER_LOG_SCHEMA.read_text())
-    for log_file in CONTAINER_LOG_REQUESTS.rglob("*.json"):
-        container_log = json.loads(log_file.read_text())
-        validate(container_log, schema)
-
-
-def test_gathering_rules_schema():
-    schema = json.loads(GATHERING_RULE_SCHEMA.read_text())
-    for rules_file in GATHERING_RULES.rglob("*.json"):
-        gathering_rules = json.loads(rules_file.read_text())
-        validate(gathering_rules, schema)
-
-
-def test_remote_configuration_v2_templates_schema():
-    schema = json.loads(REMOTE_CONFIGURATIONS_V2_TEMPLATE_SCHEMA.read_text())
-    for remote_config_file in REMOTE_CONFIGURATIONS.rglob("*.json"):
-        remote_config = json.loads(remote_config_file.read_text())
-        validate(remote_config, schema)
+@pytest.mark.parametrize("content_file,schema", files_and_schemas_to_validate())
+def test_schema(content_file, schema):
+    content = json.loads(content_file.read_text())
+    validate(content, schema)

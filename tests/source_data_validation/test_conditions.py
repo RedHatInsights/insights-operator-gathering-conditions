@@ -1,49 +1,49 @@
 import json
+import pytest
 import pathlib
 
 from tests.source_data_validation import (
-    CLUSTER_MAPPING,
-    CONTAINER_LOG_REQUESTS,
-    GATHERING_RULES,
+    CLUSTER_MAPPING_PATH,
+    REMOTE_CONFIGURATIONS_V2_TEMPLATE_DIR,
     PROJECT_ROOT,
-    REMOTE_CONFIGURATIONS,
+    gathering_rules,
+    remote_configurations,
+    remote_configurations_fixture,
+    container_log_requests,
 )
 
 
-def test_all_remote_configurations_used():
-    mapping = json.loads(CLUSTER_MAPPING.read_text())
-    mapping_configs = set([pair[1] for pair in mapping])
-    available_configs = set()
+@pytest.mark.parametrize("remote_config_path", remote_configurations())
+def test_all_remote_configurations_used(remote_config_path):
+    mapping = json.loads(CLUSTER_MAPPING_PATH.read_text())
+    mapping_configs = [pair[1] for pair in mapping]
 
-    for remote_config_path in REMOTE_CONFIGURATIONS.rglob("*.json"):
-        available_configs.add(str(remote_config_path.relative_to(REMOTE_CONFIGURATIONS)))
-
-    assert mapping_configs == available_configs
+    relative_config_path = str(remote_config_path.relative_to(REMOTE_CONFIGURATIONS_V2_TEMPLATE_DIR))
+    assert relative_config_path in mapping_configs
 
 
-def test_all_container_logs_used():
-    available_logs = set(
-        [log.relative_to(PROJECT_ROOT) for log in CONTAINER_LOG_REQUESTS.rglob("*.json")]
-    )
-    logs_in_configs = set()
+@pytest.mark.parametrize("log_path", container_log_requests())
+def test_all_container_logs_used(log_path, remote_configurations):
+    relative_log_path = log_path.relative_to(PROJECT_ROOT)
 
-    for remote_config_path in REMOTE_CONFIGURATIONS.rglob("*.json"):
+    for remote_config_path in remote_configurations:
         remote_config = json.loads(remote_config_path.read_text())
         for pattern in remote_config["container_logs"]:
-            logs_in_configs.update(pathlib.Path().glob(pattern))
+            if relative_log_path in pathlib.Path().glob(pattern):
+                return
 
-    assert available_logs == logs_in_configs
+    assert False
 
 
-def test_all_gathering_rules_used():
-    available_rules = set(
-        [rule.relative_to(PROJECT_ROOT) for rule in GATHERING_RULES.rglob("*.json")]
-    )
+@pytest.mark.parametrize("rule", gathering_rules())
+def test_gathering_rule_used(rule, remote_configurations):
+    relative_rule = rule.relative_to(PROJECT_ROOT)
     rules_in_configs = set()
 
-    for remote_config_path in REMOTE_CONFIGURATIONS.rglob("*.json"):
+    for remote_config_path in remote_configurations:
         remote_config = json.loads(remote_config_path.read_text())
         for pattern in remote_config["conditional_gathering_rules"]:
-            rules_in_configs.update(pathlib.Path().glob(pattern))
+            if relative_rule in pathlib.Path().glob(pattern):
+                return
 
-    assert available_rules == rules_in_configs
+    assert False
