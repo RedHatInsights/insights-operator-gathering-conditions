@@ -1,6 +1,5 @@
 import json
 
-from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
 
 from tests import PROJECT_ROOT
@@ -42,23 +41,3 @@ def schema_registry():
         return Resource.from_contents(json.loads((SCHEMAS / schema_ref).read_text()))
 
     return Registry(retrieve=retrieve_schema)
-
-
-def cluster_mapping_validator():
-    schema = json.loads(CLUSTER_MAPPING_SCHEMA_PATH.read_text())
-    return Draft202012Validator(schema, registry=schema_registry())
-
-
-def gathering_rule_validator():
-    schema = json.loads(GATHERING_RULE_SCHEMA_PATH.read_text())
-    return Draft202012Validator(schema, registry=schema_registry())
-
-
-def container_log_validator():
-    schema = json.loads(CONTAINER_LOG_SCHEMA_PATH.read_text())
-    return Draft202012Validator(schema, registry=schema_registry())
-
-
-def remote_configurations_v2_template_validator():
-    schema = json.loads(REMOTE_CONFIGURATIONS_V2_TEMPLATE_SCHEMA_PATH.read_text())
-    return Draft202012Validator(schema, registry=schema_registry())
