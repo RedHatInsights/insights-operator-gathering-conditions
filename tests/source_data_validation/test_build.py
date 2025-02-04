@@ -2,8 +2,6 @@ import json
 
 from jsonschema import validate
 
-from tests.source_data_validation import SCHEMAS
-
 
 def test_build_tool(build_tool_validator, tmp_path):
     # a test probably should not override the default build directory
@@ -21,9 +19,7 @@ def test_built_v1_remote_configurations_schema(build_tool_validator, tmp_path, s
     rules = json.loads((outputdir / "v1" / "rules.json").read_text())
     validate(
         rules,
-        schema_registry.get_or_retrieve(
-            str(SCHEMAS / "remote_configuration_v1.schema.json")
-        ).value.contents,
+        schema_registry.get_or_retrieve("remote_configuration_v1.schema.json").value.contents,
         registry=schema_registry,
     )
 
@@ -35,8 +31,6 @@ def test_built_v2_remote_configurations_schema(build_tool_validator, tmp_path, s
         remote_config = json.loads(remote_config_path.read_text())
         validate(
             remote_config,
-            schema_registry.get_or_retrieve(
-                str(SCHEMAS / "remote_configuration_v2.schema.json")
-            ).value.contents,
+            schema_registry.get_or_retrieve("remote_configuration_v2.schema.json").value.contents,
             registry=schema_registry,
         )
