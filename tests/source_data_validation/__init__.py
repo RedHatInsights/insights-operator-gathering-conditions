@@ -1,6 +1,9 @@
-from tests import PROJECT_ROOT
-import pytest
 import json
+
+from jsonschema import Draft202012Validator
+from referencing import Registry, Resource
+
+from tests import PROJECT_ROOT
 
 SCHEMAS = PROJECT_ROOT / "schemas"
 
@@ -14,7 +17,9 @@ GATHERING_RULES_DIR = PROJECT_ROOT / "conditional_gathering_rules"
 GATHERING_RULE_SCHEMA_PATH = SCHEMAS / "gathering_rule.schema.json"
 
 REMOTE_CONFIGURATIONS_V2_TEMPLATE_DIR = PROJECT_ROOT / "templates_v2" / "remote_configurations"
-REMOTE_CONFIGURATIONS_V2_TEMPLATE_SCHEMA_PATH = SCHEMAS / "remote_configuration_v2_template.schema.json"
+REMOTE_CONFIGURATIONS_V2_TEMPLATE_SCHEMA_PATH = (
+    SCHEMAS / "remote_configuration_v2_template.schema.json"
+)
 
 REMOTE_CONFIGURATIONS_V1_SCHEMA_PATH = SCHEMAS / "remote_configuration_v1.schema.json"
 REMOTE_CONFIGURATIONS_V2_SCHEMA_PATH = SCHEMAS / "remote_configuration_v2.schema.json"
@@ -22,11 +27,6 @@ REMOTE_CONFIGURATIONS_V2_SCHEMA_PATH = SCHEMAS / "remote_configuration_v2.schema
 
 def remote_configurations():
     return REMOTE_CONFIGURATIONS_V2_TEMPLATE_DIR.glob("*.json")
-
-
-@pytest.fixture(name="remote_configurations")
-def remote_configurations_fixture():
-    return remote_configurations()
 
 
 def gathering_rules():
@@ -37,28 +37,28 @@ def container_log_requests():
     return CONTAINER_LOG_REQUESTS_DIR.rglob("*.json")
 
 
-def cluster_mapping_schema():
-    return json.loads(CLUSTER_MAPPING_SCHEMA_PATH.read_text())
+def schema_registry():
+    def retrieve_schema(schema_ref):
+        return Resource.from_contents(json.loads((SCHEMAS / schema_ref).read_text()))
+
+    return Registry(retrieve=retrieve_schema)
 
 
-def gathering_rule_schema():
-    return json.loads(GATHERING_RULE_SCHEMA_PATH.read_text())
+def cluster_mapping_validator():
+    schema = json.loads(CLUSTER_MAPPING_SCHEMA_PATH.read_text())
+    return Draft202012Validator(schema, registry=schema_registry())
 
 
-def container_log_schema():
-    return json.loads(CONTAINER_LOG_SCHEMA_PATH.read_text())
+def gathering_rule_validator():
+    schema = json.loads(GATHERING_RULE_SCHEMA_PATH.read_text())
+    return Draft202012Validator(schema, registry=schema_registry())
 
 
-def remote_configurations_v2_template_schema():
-    return json.loads(REMOTE_CONFIGURATIONS_V2_TEMPLATE_SCHEMA_PATH.read_text())
+def container_log_validator():
+    schema = json.loads(CONTAINER_LOG_SCHEMA_PATH.read_text())
+    return Draft202012Validator(schema, registry=schema_registry())
 
 
-@pytest.fixture
-def remote_configurations_v1_schema():
-    return json.loads(REMOTE_CONFIGURATIONS_V1_SCHEMA_PATH.read_text())
-
-
-@pytest.fixture
-def remote_configurations_v2_schema():
-    return json.loads(REMOTE_CONFIGURATIONS_V2_SCHEMA_PATH.read_text())
-
+def remote_configurations_v2_template_validator():
+    schema = json.loads(REMOTE_CONFIGURATIONS_V2_TEMPLATE_SCHEMA_PATH.read_text())
+    return Draft202012Validator(schema, registry=schema_registry())

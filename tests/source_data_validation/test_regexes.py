@@ -3,13 +3,13 @@ import json
 import pytest
 
 from tests import PROJECT_ROOT
-from tests.source_data_validation import CONTAINER_LOG_REQUESTS
+from tests.source_data_validation import container_log_requests
 
 
 def get_pod_name_regexes():
     """List all unique Pod Name regexes"""
     regexes = set()
-    for file in CONTAINER_LOG_REQUESTS.glob("**/*.json"):
+    for file in container_log_requests():
         data = json.loads(file.read_text())
         regexes.add((file.relative_to(PROJECT_ROOT), data["pod_name_regex"]))
     return sorted(regexes)  # make a consistent order if we use xdist
@@ -18,7 +18,7 @@ def get_pod_name_regexes():
 def get_message_filters():
     """List all unique message filters"""
     filters = set()
-    for file in CONTAINER_LOG_REQUESTS.glob("**/*.json"):
+    for file in container_log_requests():
         data = json.loads(file.read_text())
         for message in data["messages"]:
             filters.add((file.relative_to(PROJECT_ROOT), message))
