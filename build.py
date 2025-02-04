@@ -8,11 +8,12 @@ import logging.config
 import os
 import pathlib
 import shutil
+from pathlib import Path
 
 import git
 import jsonschema
 import semver
-import jsonref
+from referencing import Registry, Resource
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,11 @@ logging_config = {
         },
     },
 }
+
+
+def retrieve_schema(schema_ref):
+    schema_path = Path(os.path.abspath("schemas")) / schema_ref
+    return Resource.from_contents(json.loads(schema_path.read_text()))
 
 
 class RemoteConfigurations:
@@ -104,21 +110,18 @@ class RemoteConfigurations:
         logger.info("Writing v1 configs")
         outputdir.mkdir(parents=True, exist_ok=True)
         self._write_configs(outputdir, self.configs_v1)
-    
+
     def _validate_config_v1_aginst_schema(self):
-        
-        schema_path = "schemas/remote_configuration_v1.schema.json"
-        schema_dir = os.path.abspath("schemas")
-
+        registry = Registry(retrieve=retrieve_schema)
         # Logging the base URI for the schema directory
-        logger.info(f"Validation of config_v1 against schema")
-
-        # Open and load the main schema with jsonref
-        with open(schema_path, 'r') as schema_file:
-            schema_with_references = jsonref.load(schema_file, base_uri=f"file://{schema_dir}/")
+        logger.info("Validation of generated rules.json against schema")
 
         try:
-            jsonschema.validate(instance=self.configs_v1["rules.json"], schema=schema_with_references)
+            jsonschema.validate(
+                self.configs_v1["rules.json"],
+                registry.get_or_retrieve("remote_configuration_V1.schema.json").value.contents,
+                registry=registry,
+            )
             logger.info("Validation successful.")
         except jsonschema.ValidationError as e:
             logger.error(f"❌ JSON validation error: {e.message}")
@@ -193,7 +196,8 @@ def parse_arguments():
         help="Configuration version. Defaults to the setuptools_scm version.",
     )
     return parser.parse_args()
-            
+
+
 def main():
     args = parse_arguments()
     remote_configs = RemoteConfigurations(args.sourcedir, args.version)
