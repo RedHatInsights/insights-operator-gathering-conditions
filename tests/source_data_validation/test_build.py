@@ -2,10 +2,7 @@ import json
 
 from jsonschema import validate
 
-from tests.source_data_validation import (
-    REMOTE_CONFIGURATIONS_V1_SCHEMA_PATH,
-    REMOTE_CONFIGURATIONS_V2_SCHEMA_PATH,
-)
+from tests.source_data_validation import SCHEMAS
 
 
 def test_build_tool(build_tool_validator, tmp_path):
@@ -24,7 +21,9 @@ def test_built_v1_remote_configurations_schema(build_tool_validator, tmp_path, s
     rules = json.loads((outputdir / "v1" / "rules.json").read_text())
     validate(
         rules,
-        schema_registry.get_or_retrieve(str(REMOTE_CONFIGURATIONS_V1_SCHEMA_PATH)).value.contents,
+        schema_registry.get_or_retrieve(
+            str(SCHEMAS / "remote_configuration_v1.schema.json")
+        ).value.contents,
         registry=schema_registry,
     )
 
@@ -37,7 +36,7 @@ def test_built_v2_remote_configurations_schema(build_tool_validator, tmp_path, s
         validate(
             remote_config,
             schema_registry.get_or_retrieve(
-                str(REMOTE_CONFIGURATIONS_V2_SCHEMA_PATH)
+                str(SCHEMAS / "remote_configuration_v2.schema.json")
             ).value.contents,
             registry=schema_registry,
         )

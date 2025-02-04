@@ -5,10 +5,6 @@ from jsonschema import validate
 
 from tests.source_data_validation import (
     CLUSTER_MAPPING_PATH,
-    CLUSTER_MAPPING_SCHEMA_PATH,
-    CONTAINER_LOG_SCHEMA_PATH,
-    GATHERING_RULE_SCHEMA_PATH,
-    REMOTE_CONFIGURATIONS_V2_TEMPLATE_SCHEMA_PATH,
     container_log_requests,
     gathering_rules,
     remote_configurations,
@@ -17,15 +13,15 @@ from tests.source_data_validation import (
 
 def files_and_schemas_to_validate():
     files_and_schemas = []
-    files_and_schemas += [(CLUSTER_MAPPING_PATH, CLUSTER_MAPPING_SCHEMA_PATH)]
+    files_and_schemas += [(CLUSTER_MAPPING_PATH, "cluster_version_mapping.schema.json")]
     files_and_schemas += [
-        (log_file, CONTAINER_LOG_SCHEMA_PATH) for log_file in container_log_requests()
+        (log_file, "container_log.schema.json") for log_file in container_log_requests()
     ]
     files_and_schemas += [
-        (rules_file, GATHERING_RULE_SCHEMA_PATH) for rules_file in gathering_rules()
+        (rules_file, "gathering_rule.schema.json") for rules_file in gathering_rules()
     ]
     files_and_schemas += [
-        (config_file, REMOTE_CONFIGURATIONS_V2_TEMPLATE_SCHEMA_PATH)
+        (config_file, "remote_configuration_v2_template.schema.json")
         for config_file in remote_configurations()
     ]
     return files_and_schemas
