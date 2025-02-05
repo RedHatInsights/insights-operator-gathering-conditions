@@ -5,7 +5,6 @@ from referencing import Registry, Resource
 
 from tests.source_data_validation import (
     SCHEMAS,
-    container_log_requests,
     remote_configurations,
 )
 
