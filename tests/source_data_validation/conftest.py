@@ -3,15 +3,7 @@ import json
 import pytest
 from referencing import Registry, Resource
 
-from tests.source_data_validation import (
-    SCHEMAS,
-    remote_configurations,
-)
-
-
-@pytest.fixture(name="remote_configurations")
-def remote_configurations_fixture():
-    return remote_configurations()
+from tests.source_data_validation import SCHEMAS
 
 
 @pytest.fixture
