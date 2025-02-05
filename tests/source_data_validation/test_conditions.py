@@ -28,23 +28,31 @@ def test_all_remote_configurations_used(remote_config_path):
 def test_all_container_logs_used(log_path, remote_configurations):
     relative_log_path = log_path.relative_to(PROJECT_ROOT)
 
+    log_found = False
     for remote_config_path in remote_configurations:
         remote_config = json.loads(remote_config_path.read_text())
         for pattern in remote_config["container_logs"]:
             if relative_log_path in pathlib.Path().glob(pattern):
-                return
+                log_found = True
+                break
+        if log_found:
+            break
 
-    assert False
+    assert log_found
 
 
 @pytest.mark.parametrize("rule", gathering_rules())
 def test_gathering_rule_used(rule, remote_configurations):
     relative_rule = rule.relative_to(PROJECT_ROOT)
 
+    rule_found = False
     for remote_config_path in remote_configurations:
         remote_config = json.loads(remote_config_path.read_text())
         for pattern in remote_config["conditional_gathering_rules"]:
             if relative_rule in pathlib.Path().glob(pattern):
-                return
+                rule_found = True
+                break
+        if rule_found:
+            break
 
-    assert False
+    assert rule_found
