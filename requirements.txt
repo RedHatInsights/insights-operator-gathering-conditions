@@ -4,5 +4,6 @@ jsonschema
 pre-commit
 pytest
 pytest-cov
+referencing
 semver
 termcolor
