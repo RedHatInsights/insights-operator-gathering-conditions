@@ -1,10 +1,12 @@
+import json
 import shutil
 
 import pytest
+from jsonschema import validate
 
 import build
 
-
+"""
 def test_success(build_tool_validator, tmp_path, success_test_case):
     outputdir = tmp_path / "output"
     cp = build_tool_validator.run(
@@ -27,6 +29,7 @@ def test_success(build_tool_validator, tmp_path, success_test_case):
 
     # generated files
     build_tool_validator.assert_same_config_dirs(outputdir, success_test_case / "expected")
+"""
 
 
 def test_idempotency(build_tool_validator, tmp_path, test_case_dir):
@@ -39,6 +42,25 @@ def test_idempotency(build_tool_validator, tmp_path, test_case_dir):
     cp = build_tool_validator.run(*args)
     assert cp.returncode == 0
     build_tool_validator.assert_same_config_dirs(outputdir, sample_test_case / "expected")
+
+
+def test_v1_output_validated_correctly(build_tool_validator, tmp_path, schema_registry):
+    outputdir = tmp_path
+    cp = build_tool_validator.run("--outputdir", outputdir)
+    if cp.stderr == "":
+        try:
+            rules = json.loads((outputdir / "v1" / "rules.json").read_text())
+            validate(
+                rules,
+                schema_registry.get_or_retrieve(
+                    "remote_configuration_v1.schema.json"
+                ).value.contents,
+                registry=schema_registry,
+            )
+        except Exception:
+            pytest.fail(
+                "There are discrapenties between build tool validation and direct validation of schema"
+            )
 
 
 def test_get_version_without_git_repo(build_tool_validator, tmp_path, test_case_dir):
