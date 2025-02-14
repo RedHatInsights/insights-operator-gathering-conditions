@@ -9,7 +9,7 @@
   ],
   "gathering_functions": {
     "logs_of_namespace": {
-      "namespace": "sample_b1",
+      "namespace": "openshift-sample-b1",
       "tail_lines": 100
     }
   }

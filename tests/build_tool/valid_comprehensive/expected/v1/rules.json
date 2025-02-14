@@ -11,7 +11,7 @@
       ],
       "gathering_functions": {
         "logs_of_namespace": {
-          "namespace": "sample_a1",
+          "namespace": "openshift-sample-a1",
           "tail_lines": 100
         }
       }
@@ -27,7 +27,7 @@
       ],
       "gathering_functions": {
         "logs_of_namespace": {
-          "namespace": "sample_a2",
+          "namespace": "openshift-sample-a2",
           "tail_lines": 100
         }
       }
@@ -43,7 +43,7 @@
       ],
       "gathering_functions": {
         "logs_of_namespace": {
-          "namespace": "extra",
+          "namespace": "openshift-extra",
           "tail_lines": 100
         }
       }

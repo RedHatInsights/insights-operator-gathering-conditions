@@ -3,6 +3,6 @@
     "sample message 1-1",
     "sample message 1-2"
   ],
-  "namespace": "sample-request-1",
+  "namespace": "openshift-sample-request-1",
   "pod_name_regex": "pod-prefix-1-.*"
 }
