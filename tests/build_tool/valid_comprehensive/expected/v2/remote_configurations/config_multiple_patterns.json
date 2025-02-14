@@ -11,7 +11,7 @@
       ],
       "gathering_functions": {
         "logs_of_namespace": {
-          "namespace": "sample_b1",
+          "namespace": "openshift-sample-b1",
           "tail_lines": 100
         }
       }
@@ -27,7 +27,7 @@
       ],
       "gathering_functions": {
         "logs_of_namespace": {
-          "namespace": "sample_b2",
+          "namespace": "openshift-sample-b2",
           "tail_lines": 100
         }
       }
@@ -43,7 +43,7 @@
       ],
       "gathering_functions": {
         "logs_of_namespace": {
-          "namespace": "extra",
+          "namespace": "openshift-extra",
           "tail_lines": 100
         }
       }
@@ -55,7 +55,7 @@
         "sample message 1-1",
         "sample message 1-2"
       ],
-      "namespace": "sample-request-1",
+      "namespace": "openshift-sample-request-1",
       "pod_name_regex": "pod-prefix-1-.*"
     },
     {
@@ -63,7 +63,7 @@
         "sample message 2-1",
         "sample message 2-2"
       ],
-      "namespace": "sample-request-2",
+      "namespace": "openshift-sample-request-2",
       "pod_name_regex": "pod-prefix-2-.*"
     },
     {
@@ -71,7 +71,7 @@
         "sample message 1-1",
         "sample message 1-2"
       ],
-      "namespace": "sample-request-1",
+      "namespace": "openshift-sample-request-1",
       "pod_name_regex": "pod-prefix-1-.*"
     },
     {
@@ -79,7 +79,7 @@
         "sample message 3-1",
         "sample message 3-2"
       ],
-      "namespace": "sample-request-3",
+      "namespace": "openshift-sample-request-3",
       "pod_name_regex": "pod-prefix-3-.*"
     }
   ],
