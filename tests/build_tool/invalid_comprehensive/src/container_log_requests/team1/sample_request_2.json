@@ -1,0 +1,8 @@
+{
+  "messages": [
+    "sample message 2-1",
+    "sample message 2-2"
+  ],
+  "namespace": "openshift-sample-request-2",
+  "pod_name_regex": "pod-prefix-2-.*"
+}

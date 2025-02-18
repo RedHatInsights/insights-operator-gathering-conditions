@@ -1,0 +1,17 @@
+{
+  "conditions": [
+    {
+      "alert": {
+        "name": "Very bad rule"
+      },
+      "type": "AleRt iS fiRing"
+    }
+  ],
+  "gathering_functions": {
+    "logs_of_namespace": {
+      "namespace": "Very bad namespace name",
+      "namespace2": "This should not even be here",
+      "tail_lines": "None"
+    }
+  }
+}

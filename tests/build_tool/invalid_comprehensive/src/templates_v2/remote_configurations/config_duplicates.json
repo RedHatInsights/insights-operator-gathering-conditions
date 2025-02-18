@@ -1,0 +1,10 @@
+{
+  "conditional_gathering_rules": [
+    "conditional_gathering_rules/extra.json",
+    "conditional_gathering_rules/extra.json"
+  ],
+  "container_logs": [
+    "container_log_requests/team1/*.json",
+    "container_log_requests/team1/*.json"
+  ]
+}

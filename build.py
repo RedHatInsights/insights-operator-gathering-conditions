@@ -41,17 +41,13 @@ logging_config = {
 }
 
 
-def retrieve_schema(schema_ref):
-    schema_path = Path(os.path.abspath("schemas")) / schema_ref
-    return Resource.from_contents(json.loads(schema_path.read_text()))
-
-
 class RemoteConfigurations:
-    def __init__(self, sourcedir, version):
+    def __init__(self, sourcedir, version, schemadir):
         logger.info(f"Current working directory: {pathlib.Path().absolute()}")
 
         self.sourcedir = pathlib.Path(sourcedir).absolute()
         self.version = version if version else self.get_version_from_git()
+        self.schemadir = pathlib.Path(schemadir).absolute()
         self.configs_v1 = {}
         self.configs_v2 = {}
 
@@ -59,6 +55,10 @@ class RemoteConfigurations:
 
         self._load_v1_config()
         self._load_v2_configs()
+
+    def retrieve_schema(self, schema_ref):
+        schema_path = self.schemadir / schema_ref
+        return Resource.from_contents(json.loads(schema_path.read_text()))
 
     def get_version_from_git(self):
         logger.info(f"Determining remote configuration version from Git repo: {self.sourcedir}")
@@ -112,9 +112,11 @@ class RemoteConfigurations:
         self._write_configs(outputdir, self.configs_v1)
 
     def _validate_config_v1_aginst_schema(self):
-        registry = Registry(retrieve=retrieve_schema)
+        registry = Registry(retrieve=self.retrieve_schema)
         # Logging the base URI for the schema directory
-        logger.info("Validation of generated rules.json against schema")
+        logger.info(
+            f"Validating generated file against remote_configuration_v1.schema : {Path(os.path.abspath('schemas'))}/remote_configuration_v1.schema.json"
+        )
 
         try:
             jsonschema.validate(
@@ -124,11 +126,12 @@ class RemoteConfigurations:
             )
             logger.info("Validation successful.")
         except jsonschema.ValidationError as e:
-            logger.error(f"❌ JSON validation error: {e.message}")
-            exit(e)
+            logger.critical(f"❌ JSON validation error: {e.message}")
+
+            raise (e)
         except jsonschema.SchemaError as e:
-            logger.error(f"❌ Schema error: {e.message}")
-            exit(e)
+            logger.critical(f"❌ Schema error: {e.message}")
+            raise (e)
 
     def _write_v2(self, outputdir):
         logger.info("Writing v2 configs")
@@ -200,7 +203,7 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
-    remote_configs = RemoteConfigurations(args.sourcedir, args.version)
+    remote_configs = RemoteConfigurations(args.sourcedir, args.version, args.schemadir)
     remote_configs.write(args.outputdir)
 
 

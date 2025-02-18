@@ -1,0 +1,6 @@
+{
+  "rules": [
+    "conditional_gathering_rules/sample_a*.json",
+    "conditional_gathering_rules/extra.json"
+  ]
+}

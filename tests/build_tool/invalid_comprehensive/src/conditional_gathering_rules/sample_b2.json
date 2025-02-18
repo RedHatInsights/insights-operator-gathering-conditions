@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "alert": {
+        "name": "KubePodCrashLooping"
+      },
+      "type": "alert_is_firing"
+    }
+  ],
+  "gathering_functions": {
+    "logs_of_namespace": {
+      "namespace": "openshift-sample-b2",
+      "tail_lines": 100
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$id": "remote_configuration_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A data structure used by the Insights Operator Gathering Conditions Service v1 API to return the remote configurations for the conditional gathering.",
+  "examples": [
+    {
+      "rules": [
+        {
+          "conditions": [
+            {
+              "alert": {
+                "name": "APIRemovedInNextEUSReleaseInUse"
+              },
+              "type": "alert_is_firing"
+            }
+          ],
+          "gathering_functions": {
+            "api_request_counts_of_resource_from_alert": {
+              "alert_name": "APIRemovedInNextEUSReleaseInUse"
+            }
+          }
+        }
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "properties": {
+    "rules": {
+      "$ref": "gathering_rules.schema.json"
+    },
+    "version": {
+      "type": "BadType"
+    }
+  },
+  "required": [
+    "rules",
+    "version"
+  ],
+  "title": "Remote configuration for Conditional Gathering",
+  "type": "BadType"
+}
