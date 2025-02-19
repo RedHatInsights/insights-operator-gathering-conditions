@@ -1,7 +1,5 @@
 from tests import PROJECT_ROOT
 
-SCHEMAS = PROJECT_ROOT / "schemas"
-
 CLUSTER_MAPPING_PATH = PROJECT_ROOT / "templates_v2" / "cluster_version_mapping.json"
 
 CONTAINER_LOG_REQUESTS_DIR = PROJECT_ROOT / "container_log_requests"
