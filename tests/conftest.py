@@ -6,8 +6,9 @@ import sys
 
 import deepdiff
 import pytest
+from referencing import Registry, Resource
 
-from tests import PROJECT_ROOT
+from tests import PROJECT_ROOT, SCHEMAS
 
 
 @pytest.fixture(scope="session")
@@ -97,3 +98,11 @@ class BuildToolValidator:
 @pytest.fixture()
 def build_tool_validator(build_tool):
     return BuildToolValidator(build_tool)
+
+
+@pytest.fixture(scope="session")
+def schema_registry():
+    def retrieve_schema(schema_ref):
+        return Resource.from_contents(json.loads((SCHEMAS / schema_ref).read_text()))
+
+    return Registry(retrieve=retrieve_schema)
