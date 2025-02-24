@@ -1,12 +1,14 @@
+import pathlib
 import shutil
 
 import pytest
 
 import build
 
-"""
+
 def test_success(build_tool_validator, tmp_path, success_test_case):
     outputdir = tmp_path / "output"
+    expected_stdout = (success_test_case / "expected_stdout.txt").read_text().split("\n")
     cp = build_tool_validator.run(
         "--sourcedir",
         success_test_case / "src",
@@ -19,15 +21,14 @@ def test_success(build_tool_validator, tmp_path, success_test_case):
 
     # exit status
     assert cp.returncode == 0
-
     # logging
-    assert "Remote configuration version: 0.0.1" in cp.stdout
     assert str(success_test_case) in cp.stdout
     assert str(outputdir) in cp.stdout
+    for line in expected_stdout:
+        assert line in cp.stdout
 
     # generated files
     build_tool_validator.assert_same_config_dirs(outputdir, success_test_case / "expected")
-"""
 
 
 def test_idempotency(build_tool_validator, tmp_path, test_case_dir):
@@ -42,49 +43,33 @@ def test_idempotency(build_tool_validator, tmp_path, test_case_dir):
     build_tool_validator.assert_same_config_dirs(outputdir, sample_test_case / "expected")
 
 
-def test_validate_correct_v1_data(
-    build_tool_validator, tmp_path, schema_registry, success_test_case
-):
+def test_failure(build_tool_validator, tmp_path, fail_test_case):
     outputdir = tmp_path / "output"
-    cp = build_tool_validator.run(
-        "--sourcedir",
-        success_test_case / "src",
-        "--outputdir",
-        outputdir,
-        # each test case could define its own version in a dedicated file if needed.
-        "--version",
-        "0.0.1",
+    custom_schemadir = fail_test_case / "schemas"
+    schemadir = (
+        custom_schemadir if custom_schemadir.exists() else pathlib.Path("schemas").absolute()
     )
-    assert cp.returncode == 0
-    build_tool_validator.assert_same_config_dirs(outputdir, success_test_case / "expected")
+    expected_stdout = (fail_test_case / "expected_stdout.txt").read_text().split("\n")
+    expected_stderr = (fail_test_case / "expected_stderr.txt").read_text().split("\n")
 
-
-def test_validate_bad_v1_data(build_tool_validator, tmp_path, fail_test_case):
-    outputdir = tmp_path / "output"
     cp = build_tool_validator.run(
         "--sourcedir",
         fail_test_case / "src",
-        "--outputdir",
-        outputdir,
-        "--version",
-        "0.0.1",
-    )
-    assert "jsonschema.exceptions.ValidationError" in cp.stderr
-
-
-def test_validate_aginst_bad_schema(build_tool_validator, tmp_path, fail_test_case):
-    outputdir = tmp_path / "output"
-    cp = cp = build_tool_validator.run(
-        "--sourcedir",
-        fail_test_case / "src",
-        "--outputdir",
-        outputdir,
         "--schemadir",
-        fail_test_case / "schemas",
+        schemadir,
+        "--outputdir",
+        outputdir,
         "--version",
         "0.0.1",
     )
-    assert "jsonschema.exceptions.SchemaError" in cp.stderr
+
+    assert cp.returncode != 0
+
+    for line in expected_stdout:
+        assert line in cp.stdout
+
+    for line in expected_stderr:
+        assert line in cp.stderr
 
 
 def test_get_version_without_git_repo(build_tool_validator, tmp_path, test_case_dir):

@@ -2,15 +2,15 @@
   "conditions": [
     {
       "alert": {
-        "name": "BadRule"
+        "name": "Very Bad Rule"
       },
-      "type": "alert is firing"
+      "type": 42
     }
   ],
   "gathering_functions": {
     "logs_of_namespace": {
-      "namespace": "BadName SpAcE",
-      "tail_lines": "inf"
+      "namespace": "Bad namespace name",
+      "tail_lines": "100 bad type"
     }
   }
 }

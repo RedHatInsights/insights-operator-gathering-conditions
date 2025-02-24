@@ -17,7 +17,6 @@ from referencing import Registry, Resource
 
 logger = logging.getLogger(__name__)
 
-
 logging_config = {
     "version": 1,
     "incremental": False,
@@ -121,7 +120,7 @@ class RemoteConfigurations:
         try:
             jsonschema.validate(
                 self.configs_v1["rules.json"],
-                registry.get_or_retrieve("remote_configuration_V1.schema.json").value.contents,
+                registry.get_or_retrieve("remote_configuration_v1.schema.json").value.contents,
                 registry=registry,
             )
             logger.info("Validation successful.")
