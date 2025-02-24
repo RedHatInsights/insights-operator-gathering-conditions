@@ -1,0 +1,1 @@
+jsonschema.exceptions.SchemaError: 'BadType' is not valid under any of the given schemas
