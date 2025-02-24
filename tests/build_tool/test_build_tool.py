@@ -1,3 +1,4 @@
+import pathlib
 import shutil
 
 import pytest
@@ -7,6 +8,7 @@ import build
 
 def test_success(build_tool_validator, tmp_path, success_test_case):
     outputdir = tmp_path / "output"
+    expected_stdout = (success_test_case / "expected_stdout.txt").read_text().split("\n")
     cp = build_tool_validator.run(
         "--sourcedir",
         success_test_case / "src",
@@ -19,11 +21,11 @@ def test_success(build_tool_validator, tmp_path, success_test_case):
 
     # exit status
     assert cp.returncode == 0
-
     # logging
-    assert "Remote configuration version: 0.0.1" in cp.stdout
     assert str(success_test_case) in cp.stdout
     assert str(outputdir) in cp.stdout
+    for line in expected_stdout:
+        assert line in cp.stdout
 
     # generated files
     build_tool_validator.assert_same_config_dirs(outputdir, success_test_case / "expected")
@@ -39,6 +41,35 @@ def test_idempotency(build_tool_validator, tmp_path, test_case_dir):
     cp = build_tool_validator.run(*args)
     assert cp.returncode == 0
     build_tool_validator.assert_same_config_dirs(outputdir, sample_test_case / "expected")
+
+
+def test_failure(build_tool_validator, tmp_path, fail_test_case):
+    outputdir = tmp_path / "output"
+    custom_schemadir = fail_test_case / "schemas"
+    schemadir = (
+        custom_schemadir if custom_schemadir.exists() else pathlib.Path("schemas").absolute()
+    )
+    expected_stdout = (fail_test_case / "expected_stdout.txt").read_text().split("\n")
+    expected_stderr = (fail_test_case / "expected_stderr.txt").read_text().split("\n")
+
+    cp = build_tool_validator.run(
+        "--sourcedir",
+        fail_test_case / "src",
+        "--schemadir",
+        schemadir,
+        "--outputdir",
+        outputdir,
+        "--version",
+        "0.0.1",
+    )
+
+    assert cp.returncode != 0
+
+    for line in expected_stdout:
+        assert line in cp.stdout
+
+    for line in expected_stderr:
+        assert line in cp.stderr
 
 
 def test_get_version_without_git_repo(build_tool_validator, tmp_path, test_case_dir):
