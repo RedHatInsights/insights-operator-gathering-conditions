@@ -105,12 +105,12 @@ class RemoteConfigurations:
         self._write_v2(outputdir / "v2")
 
     def _write_v1(self, outputdir):
-        self._validate_config_v1_aginst_schema()
+        self._validate_config_v1_against_schema()
         logger.info("Writing v1 configs")
         outputdir.mkdir(parents=True, exist_ok=True)
         self._write_configs(outputdir, self.configs_v1)
 
-    def _validate_config_v1_aginst_schema(self):
+    def _validate_config_v1_against_schema(self):
         registry = Registry(retrieve=self.retrieve_schema)
         # Logging the base URI for the schema directory
         logger.info(
