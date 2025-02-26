@@ -47,6 +47,7 @@ class RemoteConfigurations:
         self.sourcedir = pathlib.Path(sourcedir).absolute()
         self.version = version if version else self.get_version_from_git()
         self.schemadir = pathlib.Path(schemadir).absolute()
+        self.registry = Registry(retrieve=self._retrieve_schema)
         self.configs_v1 = {}
         self.configs_v2 = {}
 
@@ -55,7 +56,7 @@ class RemoteConfigurations:
         self._load_v1_config()
         self._load_v2_configs()
 
-    def retrieve_schema(self, schema_ref):
+    def _retrieve_schema(self, schema_ref):
         schema_path = self.schemadir / schema_ref
         return Resource.from_contents(json.loads(schema_path.read_text()))
 
@@ -111,7 +112,6 @@ class RemoteConfigurations:
         self._write_configs(outputdir, self.configs_v1)
 
     def _validate_config_v1_against_schema(self):
-        registry = Registry(retrieve=self.retrieve_schema)
         # Logging the base URI for the schema directory
         logger.info(
             f"Validating generated file against remote_configuration_v1.schema : {Path(os.path.abspath('schemas'))}/remote_configuration_v1.schema.json"
@@ -120,10 +120,10 @@ class RemoteConfigurations:
         try:
             jsonschema.validate(
                 self.configs_v1["rules.json"],
-                registry.get_or_retrieve("remote_configuration_v1.schema.json").value.contents,
-                registry=registry,
+                self.registry.get_or_retrieve("remote_configuration_v1.schema.json").value.contents,
+                registry=self.registry,
             )
-            logger.info("Validation successful.")
+            logger.debug("V1 validation successful.")
         except jsonschema.ValidationError as e:
             logger.critical(f"❌ JSON validation error: {e.message}")
 

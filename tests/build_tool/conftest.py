@@ -22,7 +22,7 @@ def paths_to_ids(paths):
     return [p.name for p in paths]
 
 
-@pytest.fixture(params=get_success_test_cases())
+@pytest.fixture(params=get_success_test_cases(), ids=paths_to_ids(get_success_test_cases()))
 def success_test_case(request):
     # fixture parametrization: a data directory that defines a happy day test case
     return request.param

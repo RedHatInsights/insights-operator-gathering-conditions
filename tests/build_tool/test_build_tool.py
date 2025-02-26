@@ -8,7 +8,6 @@ import build
 
 def test_success(build_tool_validator, tmp_path, success_test_case):
     outputdir = tmp_path / "output"
-    expected_stdout = (success_test_case / "expected_stdout.txt").read_text().split("\n")
     cp = build_tool_validator.run(
         "--sourcedir",
         success_test_case / "src",
@@ -24,9 +23,6 @@ def test_success(build_tool_validator, tmp_path, success_test_case):
     # logging
     assert str(success_test_case) in cp.stdout
     assert str(outputdir) in cp.stdout
-    for line in expected_stdout:
-        assert line in cp.stdout
-
     # generated files
     build_tool_validator.assert_same_config_dirs(outputdir, success_test_case / "expected")
 
@@ -65,11 +61,8 @@ def test_failure(build_tool_validator, tmp_path, fail_test_case):
 
     assert cp.returncode != 0
 
-    for line in expected_stdout:
-        assert line in cp.stdout
-
-    for line in expected_stderr:
-        assert line in cp.stderr
+    assert all(line in cp.stdout for line in expected_stdout)
+    assert all(line in cp.stderr for line in expected_stderr)
 
 
 def test_get_version_without_git_repo(build_tool_validator, tmp_path, test_case_dir):
