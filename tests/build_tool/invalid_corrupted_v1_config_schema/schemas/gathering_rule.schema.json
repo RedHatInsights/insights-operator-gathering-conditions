@@ -1,0 +1,224 @@
+{
+  "$id": "gathering_rule.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A gathering rule for conditional gatherer",
+  "examples": [
+    {
+      "conditions": [
+        {
+          "alert": {
+            "name": "SamplesImagestreamImportFailing"
+          },
+          "type": "alert_is_firing"
+        }
+      ],
+      "gathering_functions": {
+        "gather_imagestreams_of_namespace": {
+          "namespace": "openshift-cluster-samples-operator"
+        },
+        "gather_logs_of_namespace": {
+          "keep_lines": 100,
+          "label_selector": "",
+          "namespace": "openshift-cluster-samples-operator"
+        }
+      }
+    }
+  ],
+  "properties": {
+    "conditions": {
+      "description": "The list of conditions on which the rule is triggered",
+      "items": {
+        "anyOf": [
+          {
+            "description": "alert_is_firing condition",
+            "properties": {
+              "alert": {
+                "description": "Parameters of the condition alert_is_firing",
+                "properties": {
+                  "name": {
+                    "description": "Name of the alert",
+                    "pattern": "^[a-zA-Z0-9_]{1,128}$",
+                    "title": "Name",
+                    "type": "Number"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "title": "AlertConditionParams",
+                "type": "object"
+              },
+              "type": {
+                "const": "alert_is_firing",
+                "description": "Type of the condition alert_is_firing",
+                "title": "Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "alert"
+            ],
+            "title": "ConditionWithParams",
+            "type": "object"
+          },
+          {
+            "description": "cluster_version_matches condition",
+            "properties": {
+              "cluster_version_matches": {
+                "description": "Parameters of the condition cluster_version_matches",
+                "properties": {
+                  "version": {
+                    "description": "Version contains a semantic versioning expression",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "title": "Version",
+                    "type": "Number"
+                  }
+                },
+                "required": [
+                  "version"
+                ],
+                "title": "ClusterVersionMatchesConditionParams",
+                "type": "object"
+              },
+              "type": {
+                "const": "cluster_version_matches",
+                "description": "Type of the condition cluster_version_matches",
+                "title": "Type",
+                "type": "<TEXT>string<TEXT>"
+              }
+            },
+            "required": [
+              "type",
+              "cluster_version_matches"
+            ],
+            "title": "ConditionWithParams",
+            "type": "object"
+          }
+        ],
+        "description": "A condition",
+        "title": "ConditionWithParams",
+        "type": "object"
+      },
+      "maxItems": 8,
+      "minItems": 0,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "gathering_functions": {
+      "additionalProperties": false,
+      "description": "The list of gathering functions to perform if conditions are met",
+      "maxProperties": 8,
+      "minProperties": 1,
+      "patternProperties": {
+        "^api_request_counts_of_resource_from_alert$": {
+          "properties": {
+            "alert_name": {
+              "pattern": "^[a-zA-Z0-9_]{1,128}$",
+              "title": "AlertName",
+              "type": "string"
+            }
+          },
+          "required": [
+            "alert_name"
+          ],
+          "title": "GatherApiRequestCountsParams",
+          "type": "object"
+        },
+        "^containers_logs$": {
+          "properties": {
+            "alert_name": {
+              "pattern": "^[a-zA-Z0-9_]{1,128}$",
+              "title": "AlertName",
+              "type": "string"
+            },
+            "container": {
+              "pattern": "^[a-zA-Z0-9_.-]{1,128}$",
+              "title": "Container",
+              "type": "string"
+            },
+            "namespace": {
+              "pattern": "^openshift-[a-zA-Z0-9_.-]{1,128}$",
+              "title": "Namespace",
+              "type": "string"
+            },
+            "previous": {
+              "title": "If true, the previous logs will be gathered instead of the current",
+              "type": "boolean"
+            },
+            "tail_lines": {
+              "maximum": 4096,
+              "minimum": 1,
+              "title": "TailLines",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "alert_name",
+            "tail_lines"
+          ],
+          "title": "GatherContainersLogsParams",
+          "type": "object"
+        },
+        "^image_streams_of_namespace$": {
+          "properties": {
+            "namespace": {
+              "pattern": "^openshift-[a-zA-Z0-9_.-]{1,128}$",
+              "title": "Namespace",
+              "type": "string"
+            }
+          },
+          "required": [
+            "namespace"
+          ],
+          "title": "GatherImageStreamsOfNamespaceParams",
+          "type": "object"
+        },
+        "^logs_of_namespace$": {
+          "properties": {
+            "namespace": {
+              "pattern": "^openshift-[a-zA-Z0-9_.-]{1,128}$",
+              "title": "Namespace",
+              "type": "string"
+            },
+            "tail_lines": {
+              "maximum": 4096,
+              "minimum": 1,
+              "title": "TailLines",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "namespace",
+            "tail_lines"
+          ],
+          "title": "GatherLogsOfNamespaceParams",
+          "type": "object"
+        },
+        "^pod_definition$": {
+          "properties": {
+            "alert_name": {
+              "pattern": "^[a-zA-Z0-9_]{1,128}$",
+              "title": "AlertName",
+              "type": "string"
+            }
+          },
+          "required": [
+            "alert_name"
+          ],
+          "title": "GatherPodDefinitionParams",
+          "type": "object"
+        }
+      },
+      "title": "GatheringFunctions",
+      "type": "object"
+    }
+  },
+  "required": [
+    "conditions",
+    "gathering_functions"
+  ],
+  "title": "Conditional Gatherer Rule",
+  "type": "object"
+}

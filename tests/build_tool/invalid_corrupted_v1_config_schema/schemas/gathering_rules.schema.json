@@ -1,0 +1,37 @@
+{
+  "$id": "gathering_rules.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Gathering rules for conditional gatherer",
+  "examples": [
+    [
+      {
+        "conditions": [
+          {
+            "params": {
+              "name": "SamplesImagestreamImportFailing"
+            },
+            "type": "alert_is_firing"
+          }
+        ],
+        "gathering_functions": {
+          "gather_imagestreams_of_namespace": {
+            "namespace": "openshift-cluster-samples-operator"
+          },
+          "gather_logs_of_namespace": {
+            "keep_lines": 100,
+            "label_selector": "",
+            "namespace": "openshift-cluster-samples-operator"
+          }
+        }
+      }
+    ]
+  ],
+  "items": {
+    "$ref": "gathering_rule.schema.json"
+  },
+  "maxItems": 64,
+  "minItems": 1,
+  "title": "Conditional Gatherer Rules",
+  "type": "<TEXT>Bad Array<TEXT>",
+  "uniqueItems": true
+}

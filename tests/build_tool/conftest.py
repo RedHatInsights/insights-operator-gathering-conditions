@@ -11,10 +11,24 @@ def test_case_dir():
 
 
 def get_success_test_cases():
-    return TEST_CASE_DIR.glob("valid_*")
+    return sorted(TEST_CASE_DIR.glob("valid_*"))
 
 
-@pytest.fixture(params=get_success_test_cases())
+def get_fail_test_cases():
+    return sorted(TEST_CASE_DIR.glob("invalid_*"))
+
+
+def paths_to_ids(paths):
+    return [p.name for p in paths]
+
+
+@pytest.fixture(params=get_success_test_cases(), ids=paths_to_ids(get_success_test_cases()))
 def success_test_case(request):
     # fixture parametrization: a data directory that defines a happy day test case
+    return request.param
+
+
+@pytest.fixture(params=get_fail_test_cases(), ids=paths_to_ids(get_fail_test_cases()))
+def fail_test_case(request):
+    # fixture parametrization: a data directory that defines a sad day test case
     return request.param
