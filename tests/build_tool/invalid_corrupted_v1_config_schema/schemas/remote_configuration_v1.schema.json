@@ -37,5 +37,5 @@
     "version"
   ],
   "title": "Remote configuration for Conditional Gathering",
-  "type": "BadType"
+  "type": "object"
 }
