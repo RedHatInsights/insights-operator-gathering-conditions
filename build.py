@@ -5,10 +5,8 @@ import argparse
 import json
 import logging
 import logging.config
-import os
 import pathlib
 import shutil
-from pathlib import Path
 
 import git
 import jsonschema
@@ -111,31 +109,12 @@ class RemoteConfigurations:
         self._write_v2(outputdir / "v2")
 
     def _write_v1(self, outputdir):
-        self._validate_config_v1_against_schema()
+        self._assert_json_schema(
+            self.configs_v1["rules.json"], "remote_configuration_v1.schema.json"
+        )
         logger.info("Writing v1 configs")
         outputdir.mkdir(parents=True, exist_ok=True)
         self._write_configs(outputdir, self.configs_v1)
-
-    def _validate_config_v1_against_schema(self):
-        # Logging the base URI for the schema directory
-        logger.info(
-            f"Validating generated file against remote_configuration_v1.schema : {Path(os.path.abspath('schemas'))}/remote_configuration_v1.schema.json"
-        )
-
-        try:
-            jsonschema.validate(
-                self.configs_v1["rules.json"],
-                self.registry.get_or_retrieve("remote_configuration_v1.schema.json").value.contents,
-                registry=self.registry,
-            )
-            logger.debug("V1 validation successful.")
-        except jsonschema.ValidationError as e:
-            logger.critical(f"❌ JSON validation error: {e.message}")
-
-            raise (e)
-        except jsonschema.SchemaError as e:
-            logger.critical(f"❌ Schema error: {e.message}")
-            raise (e)
 
     def _write_v2(self, outputdir):
         logger.info("Writing v2 configs")
@@ -161,6 +140,21 @@ class RemoteConfigurations:
             filepath = outputdir / filename
             logger.info(f"Writing config: {filepath}")
             filepath.write_text(json.dumps(config))
+
+    def _assert_json_schema(self, content, schema_ref):
+        logger.info(f"Validating generated file against {schema_ref}")
+
+        try:
+            schema = self.registry.get_or_retrieve(schema_ref).value.contents
+            jsonschema.validate(content, schema, registry=self.registry)
+
+        except jsonschema.ValidationError as e:
+            logger.critical(f"❌ JSON validation error: {e.message}")
+            raise (e)
+
+        except jsonschema.SchemaError as e:
+            logger.critical(f"❌ Schema error: {e.message}")
+            raise (e)
 
     @staticmethod
     def parse_version_from_git(raw_version):
