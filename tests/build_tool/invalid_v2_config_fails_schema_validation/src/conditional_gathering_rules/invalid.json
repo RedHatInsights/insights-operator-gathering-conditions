@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "alert": {
+        "name": "Very Bad Rule In V2 Config"
+      },
+      "type": 42
+    }
+  ],
+  "gathering_functions": {
+    "logs_of_namespace": {
+      "namespace": "Bad namespace name",
+      "tail_lines": "100 bad type"
+    }
+  }
+}

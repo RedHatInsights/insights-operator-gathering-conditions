@@ -109,18 +109,21 @@ class RemoteConfigurations:
         self._write_v2(outputdir / "v2")
 
     def _write_v1(self, outputdir):
-        self._assert_json_schema(
-            self.configs_v1["rules.json"], "remote_configuration_v1.schema.json"
-        )
         logger.info("Writing v1 configs")
         outputdir.mkdir(parents=True, exist_ok=True)
-        self._write_configs(outputdir, self.configs_v1)
+        self._write_configs(
+            outputdir, self.configs_v1, schema_ref="remote_configuration_v1.schema.json"
+        )
 
     def _write_v2(self, outputdir):
         logger.info("Writing v2 configs")
         (outputdir / "remote_configurations").mkdir(parents=True, exist_ok=True)
         self._write_cluster_version_mapping(outputdir)
-        self._write_configs(outputdir / "remote_configurations", self.configs_v2)
+        self._write_configs(
+            outputdir / "remote_configurations",
+            self.configs_v2,
+            schema_ref="remote_configuration_v2.schema.json",
+        )
 
     def _write_cluster_version_mapping(self, outputdir):
         # preserve non-standard formatting of the file
@@ -134,15 +137,15 @@ class RemoteConfigurations:
         logger.debug(f"Loading file: {path}")
         return json.loads(path.read_text())
 
-    @staticmethod
-    def _write_configs(outputdir, configs):
+    def _write_configs(self, outputdir, configs, schema_ref):
         for filename, config in configs.items():
             filepath = outputdir / filename
             logger.info(f"Writing config: {filepath}")
             filepath.write_text(json.dumps(config))
+            self._assert_json_schema(filepath, config, schema_ref)
 
-    def _assert_json_schema(self, content, schema_ref):
-        logger.info(f"Validating generated file against {schema_ref}")
+    def _assert_json_schema(self, filepath, content, schema_ref):
+        logger.info(f"Validating file against {schema_ref}: {filepath}")
 
         try:
             schema = self.registry.get_or_retrieve(schema_ref).value.contents
