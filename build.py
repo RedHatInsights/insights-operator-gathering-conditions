@@ -126,7 +126,7 @@ class RemoteConfigurations:
         # preserve non-standard formatting of the file
         srcpath = self.sourcedir / "templates_v2" / "cluster_version_mapping.json"
         dstpath = outputdir / "cluster_version_mapping.json"
-        logger.info(f"Writing cluster_version_mapping json: {dstpath}")
+        logger.info(f"Writing cluster_version_mapping.json: {dstpath}")
         shutil.copy(srcpath, dstpath)
 
     @staticmethod
