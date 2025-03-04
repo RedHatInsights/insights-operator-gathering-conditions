@@ -44,14 +44,18 @@ class RemoteConfigurations:
     def __init__(self, sourcedir, version, schemadir):
         logger.info(f"Current working directory: {pathlib.Path().absolute()}")
 
-        self.sourcedir = pathlib.Path(sourcedir).absolute()
-        self.version = version if version else self.get_version_from_git()
         self.schemadir = pathlib.Path(schemadir).absolute()
+        logger.info(f"Schema directory: {self.schemadir}")
+
+        self.sourcedir = pathlib.Path(sourcedir).absolute()
+        logger.info(f"Source directory: {self.sourcedir}")
+
+        self.version = version if version else self.get_version_from_git()
+        logger.info(f"Remote configuration version: {self.version}")
+
         self.registry = Registry(retrieve=self._retrieve_schema)
         self.configs_v1 = {}
         self.configs_v2 = {}
-
-        logger.info(f"Remote configuration version: {self.version}")
 
         self._load_v1_config()
         self._load_v2_configs()
@@ -102,6 +106,7 @@ class RemoteConfigurations:
 
     def write(self, outputdir):
         outputdir = pathlib.Path(outputdir).absolute()
+        logger.info(f"Output directory: {outputdir}")
         self._write_v1(outputdir / "v1")
         self._write_v2(outputdir / "v2")
 
