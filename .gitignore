@@ -3,6 +3,7 @@ build/*
 
 # Python files
 __pycache__
+.coverage
 
 # IDEs
 .idea
