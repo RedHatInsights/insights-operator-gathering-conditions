@@ -2,7 +2,7 @@
   "conditions": [
     {
       "alert": {
-        "name": "Very Bad Rule"
+        "name": "Very Bad Rule In V1 Config"
       },
       "type": 42
     }

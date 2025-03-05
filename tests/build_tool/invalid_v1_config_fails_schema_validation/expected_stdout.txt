@@ -1,1 +1,1 @@
-CRITICAL: ❌ JSON validation error: 'Very Bad Rule' does not match '^[a-zA-Z0-9_]{1,128}$'
+CRITICAL: ❌ JSON validation error: 'Very Bad Rule In V1 Config' does not match '^[a-zA-Z0-9_]{1,128}$'
