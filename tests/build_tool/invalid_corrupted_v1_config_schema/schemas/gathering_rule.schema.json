@@ -39,7 +39,7 @@
                     "description": "Name of the alert",
                     "pattern": "^[a-zA-Z0-9_]{1,128}$",
                     "title": "Name",
-                    "type": "Number"
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -73,7 +73,7 @@
                     "maxLength": 64,
                     "minLength": 1,
                     "title": "Version",
-                    "type": "Number"
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -86,7 +86,7 @@
                 "const": "cluster_version_matches",
                 "description": "Type of the condition cluster_version_matches",
                 "title": "Type",
-                "type": "<TEXT>string<TEXT>"
+                "type": "string"
               }
             },
             "required": [

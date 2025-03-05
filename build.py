@@ -5,10 +5,8 @@ import argparse
 import json
 import logging
 import logging.config
-import os
 import pathlib
 import shutil
-from pathlib import Path
 
 import git
 import jsonschema
@@ -44,14 +42,18 @@ class RemoteConfigurations:
     def __init__(self, sourcedir, version, schemadir):
         logger.info(f"Current working directory: {pathlib.Path().absolute()}")
 
-        self.sourcedir = pathlib.Path(sourcedir).absolute()
-        self.version = version if version else self.get_version_from_git()
         self.schemadir = pathlib.Path(schemadir).absolute()
+        logger.info(f"Schema directory: {self.schemadir}")
+
+        self.sourcedir = pathlib.Path(sourcedir).absolute()
+        logger.info(f"Source directory: {self.sourcedir}")
+
+        self.version = version if version else self.get_version_from_git()
+        logger.info(f"Remote configuration version: {self.version}")
+
         self.registry = Registry(retrieve=self._retrieve_schema)
         self.configs_v1 = {}
         self.configs_v2 = {}
-
-        logger.info(f"Remote configuration version: {self.version}")
 
         self._load_v1_config()
         self._load_v2_configs()
@@ -102,35 +104,17 @@ class RemoteConfigurations:
 
     def write(self, outputdir):
         outputdir = pathlib.Path(outputdir).absolute()
+        logger.info(f"Output directory: {outputdir}")
         self._write_v1(outputdir / "v1")
         self._write_v2(outputdir / "v2")
 
     def _write_v1(self, outputdir):
-        self._validate_config_v1_against_schema()
+        self._assert_json_schema(
+            self.configs_v1["rules.json"], "remote_configuration_v1.schema.json"
+        )
         logger.info("Writing v1 configs")
         outputdir.mkdir(parents=True, exist_ok=True)
         self._write_configs(outputdir, self.configs_v1)
-
-    def _validate_config_v1_against_schema(self):
-        # Logging the base URI for the schema directory
-        logger.info(
-            f"Validating generated file against remote_configuration_v1.schema : {Path(os.path.abspath('schemas'))}/remote_configuration_v1.schema.json"
-        )
-
-        try:
-            jsonschema.validate(
-                self.configs_v1["rules.json"],
-                self.registry.get_or_retrieve("remote_configuration_v1.schema.json").value.contents,
-                registry=self.registry,
-            )
-            logger.debug("V1 validation successful.")
-        except jsonschema.ValidationError as e:
-            logger.critical(f"❌ JSON validation error: {e.message}")
-
-            raise (e)
-        except jsonschema.SchemaError as e:
-            logger.critical(f"❌ Schema error: {e.message}")
-            raise (e)
 
     def _write_v2(self, outputdir):
         logger.info("Writing v2 configs")
@@ -142,7 +126,7 @@ class RemoteConfigurations:
         # preserve non-standard formatting of the file
         srcpath = self.sourcedir / "templates_v2" / "cluster_version_mapping.json"
         dstpath = outputdir / "cluster_version_mapping.json"
-        logger.info(f"Writing cluster_version_mapping json: {dstpath}")
+        logger.info(f"Writing cluster_version_mapping.json: {dstpath}")
         shutil.copy(srcpath, dstpath)
 
     @staticmethod
@@ -156,6 +140,21 @@ class RemoteConfigurations:
             filepath = outputdir / filename
             logger.info(f"Writing config: {filepath}")
             filepath.write_text(json.dumps(config))
+
+    def _assert_json_schema(self, content, schema_ref):
+        logger.info(f"Validating generated file against {schema_ref}")
+
+        try:
+            schema = self.registry.get_or_retrieve(schema_ref).value.contents
+            jsonschema.validate(content, schema, registry=self.registry)
+
+        except jsonschema.ValidationError as e:
+            logger.critical(f"❌ JSON validation error: {e.message}")
+            raise (e)
+
+        except jsonschema.SchemaError as e:
+            logger.critical(f"❌ Schema error: {e.message}")
+            raise (e)
 
     @staticmethod
     def parse_version_from_git(raw_version):
@@ -204,6 +203,7 @@ def main():
     args = parse_arguments()
     remote_configs = RemoteConfigurations(args.sourcedir, args.version, args.schemadir)
     remote_configs.write(args.outputdir)
+    logger.info("Done.")
 
 
 if __name__ == "__main__":

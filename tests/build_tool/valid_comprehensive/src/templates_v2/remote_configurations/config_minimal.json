@@ -2,7 +2,5 @@
   "conditional_gathering_rules": [
     "conditional_gathering_rules/extra.json"
   ],
-  "container_logs": [
-    "container_log_requests/*/*.json"
-  ]
+  "container_logs": []
 }

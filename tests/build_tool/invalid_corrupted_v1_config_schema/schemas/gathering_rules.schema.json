@@ -32,6 +32,6 @@
   "maxItems": 64,
   "minItems": 1,
   "title": "Conditional Gatherer Rules",
-  "type": "<TEXT>Bad Array<TEXT>",
+  "type": "array",
   "uniqueItems": true
 }

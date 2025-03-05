@@ -61,8 +61,11 @@ def test_failure(build_tool_validator, tmp_path, fail_test_case):
 
     assert cp.returncode != 0
 
-    assert all(line in cp.stdout for line in expected_stdout)
-    assert all(line in cp.stderr for line in expected_stderr)
+    for line in expected_stdout:
+        assert line in cp.stdout
+
+    for line in expected_stderr:
+        assert line in cp.stderr
 
 
 def test_get_version_without_git_repo(build_tool_validator, tmp_path, test_case_dir):

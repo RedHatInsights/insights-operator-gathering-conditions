@@ -1,0 +1,62 @@
+{
+  "$id": "remote_configuration_v2.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A data structure used by the Insights Operator Gathering Conditions Service v2 API to return the remote configurations for the conditional gathering.",
+  "examples": [
+    {
+      "conditional_gathering_rules": [
+        {
+          "conditions": [
+            {
+              "alert": {
+                "name": "ThanosRuleQueueIsDroppingAlerts"
+              },
+              "type": "alert_is_firing"
+            }
+          ],
+          "gathering_functions": {
+            "containers_logs": {
+              "alert_name": "ThanosRuleQueueIsDroppingAlerts",
+              "container": "thanos-ruler",
+              "tail_lines": 50
+            }
+          }
+        }
+      ],
+      "container_logs": [
+        {
+          "messages": [
+            "Internal error occurred: error resolving resource",
+            "syncing garbage collector with updated resources from discovery"
+          ],
+          "namespace": "openshift-kube-controller-manager",
+          "pod_name_regex": "kube-controller-manager.*"
+        }
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "properties": {
+    "conditional_gathering_rules": {
+      "$ref": "gathering_rules.schema.json"
+    },
+    "container_logs": {
+      "description": "Container Log Requests used in Rapid Recommendations",
+      "items": {
+        "$ref": "container_log.schema.json"
+      },
+      "type": "array",
+      "uniqueItems": false
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "conditional_gathering_rules",
+    "container_logs",
+    "version"
+  ],
+  "title": "Remote configuration for Conditional Gathering",
+  "type": "object"
+}
