@@ -203,6 +203,7 @@ def main():
     args = parse_arguments()
     remote_configs = RemoteConfigurations(args.sourcedir, args.version, args.schemadir)
     remote_configs.write(args.outputdir)
+    logger.info("Done.")
 
 
 if __name__ == "__main__":
