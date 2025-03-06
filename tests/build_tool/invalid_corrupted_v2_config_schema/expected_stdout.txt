@@ -1,1 +1,1 @@
-CRITICAL: ❌ Schema error: 'BadTypeInV2Schema' is not valid under any of the given schemas
+CRITICAL: ❌ JSON validation error: SchemaError: 'BadTypeInV2Schema' is not valid under any of the given schemas

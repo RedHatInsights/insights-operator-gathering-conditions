@@ -151,12 +151,11 @@ class RemoteConfigurations:
             schema = self.registry.get_or_retrieve(schema_ref).value.contents
             jsonschema.validate(content, schema, registry=self.registry)
 
-        except jsonschema.ValidationError as e:
-            logger.critical(f"❌ JSON validation error: {e.message}")
-            raise (e)
-
-        except jsonschema.SchemaError as e:
-            logger.critical(f"❌ Schema error: {e.message}")
+        except (jsonschema.ValidationError, jsonschema.SchemaError) as e:
+            e.add_note(f"\nValidated file: {filepath}")
+            e.add_note(f"Schema directory: {self.schemadir}")
+            e.add_note(f"Schema: {schema_ref}")
+            logger.critical(f"❌ JSON validation error: {e.__class__.__name__}: {e.message}")
             raise (e)
 
     @staticmethod
