@@ -126,11 +126,16 @@ class RemoteConfigurations:
         )
 
     def _write_cluster_version_mapping(self, outputdir):
-        # preserve non-standard formatting of the file
         srcpath = self.sourcedir / "templates_v2" / "cluster_version_mapping.json"
         dstpath = outputdir / "cluster_version_mapping.json"
         logger.info(f"Writing cluster_version_mapping.json: {dstpath}")
+        # preserve non-standard formatting of the file
         shutil.copy(srcpath, dstpath)
+        self._validate_cluster_version_mapping(dstpath)
+
+    def _validate_cluster_version_mapping(self, filepath):
+        content = self._load_json(filepath)
+        self._assert_json_schema(filepath, content, "cluster_version_mapping.schema.json")
 
     @staticmethod
     def _load_json(path):
