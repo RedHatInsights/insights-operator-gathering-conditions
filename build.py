@@ -142,6 +142,7 @@ class RemoteConfigurations:
         self._assert_json_schema(filepath, content, "cluster_version_mapping.schema.json")
         self._assert_cluster_version_mapping_first_interval(filepath, content)
         self._assert_cluster_version_mapping_order(filepath, content)
+        self._assert_cluster_version_mapping_configs_exist(filepath, content)
 
     def _assert_cluster_version_mapping_first_interval(self, filepath, content):
         first_version = content[0][0]
@@ -172,6 +173,22 @@ class RemoteConfigurations:
                 e.add_note(
                     "\nPairs in the cluster_version_mapping.json file "
                     "must have strictly increasing semantic versions."
+                )
+                logger.critical(f"❌ {e.__class__.__name__}: {e}")
+                raise (e)
+
+    def _assert_cluster_version_mapping_configs_exist(self, filepath, content):
+        for i, entry in enumerate(content):
+            _, config_name = entry
+            # If we loaded the config file, we trust ourselves that
+            # we would write the config or report another error.
+            if config_name not in self.configs_v2:
+                template_path = (
+                    self.sourcedir / "templates_v2" / "remote_configurations" / config_name
+                )
+                e = ClusterVersionMappingError(
+                    f"'{config_name}' does not reference a valid config at index {i}: {filepath}; "
+                    f"expected config template path: {template_path}"
                 )
                 logger.critical(f"❌ {e.__class__.__name__}: {e}")
                 raise (e)
