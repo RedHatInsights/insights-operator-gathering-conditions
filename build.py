@@ -38,6 +38,10 @@ logging_config = {
 }
 
 
+class ClusterVersionMappingError(RuntimeError):
+    """An exception used to report cluster version mapping validation errors."""
+
+
 class RemoteConfigurations:
     def __init__(self, sourcedir, version, schemadir):
         logger.info(f"Current working directory: {pathlib.Path().absolute()}")
@@ -127,15 +131,36 @@ class RemoteConfigurations:
 
     def _write_cluster_version_mapping(self, outputdir):
         srcpath = self.sourcedir / "templates_v2" / "cluster_version_mapping.json"
+        self._validate_cluster_version_mapping(srcpath)
         dstpath = outputdir / "cluster_version_mapping.json"
         logger.info(f"Writing cluster_version_mapping.json: {dstpath}")
         # preserve non-standard formatting of the file
         shutil.copy(srcpath, dstpath)
-        self._validate_cluster_version_mapping(dstpath)
 
     def _validate_cluster_version_mapping(self, filepath):
         content = self._load_json(filepath)
         self._assert_json_schema(filepath, content, "cluster_version_mapping.schema.json")
+        self._assert_cluster_version_mapping_order(filepath, content)
+
+    def _assert_cluster_version_mapping_order(self, filepath, content):
+        i = 0
+        v1 = semver.Version.parse(content[0][0])
+        for raw_version, _ in content[1:]:
+            v2 = semver.Version.parse(raw_version)
+            if v1 < v2:
+                v1 = v2
+                i = i + 1
+            else:
+                e = ClusterVersionMappingError(
+                    f"'{v1}' is NOT smaller than '{v2}' in semantic versioning "
+                    f"at index {i}: {filepath}"
+                )
+                e.add_note(
+                    "\nPairs in the cluster_version_mapping.json file "
+                    "must have strictly increasing semantic versions."
+                )
+                logger.critical(f"❌ {e.__class__.__name__}: {e}")
+                raise (e)
 
     @staticmethod
     def _load_json(path):
