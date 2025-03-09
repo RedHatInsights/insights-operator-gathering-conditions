@@ -115,19 +115,18 @@ class RemoteConfigurations:
     def _write_v1(self, outputdir):
         logger.info("Writing v1 configs")
         outputdir.mkdir(parents=True, exist_ok=True)
-        self._write_configs(
-            outputdir, self.configs_v1, schema_ref="remote_configuration_v1.schema.json"
-        )
+        for filename, config in self.configs_v1.items():
+            filepath = self._write_config(outputdir, filename, config)
+            self._assert_json_schema(filepath, config, "remote_configuration_v1.schema.json")
 
     def _write_v2(self, outputdir):
         logger.info("Writing v2 configs")
-        (outputdir / "remote_configurations").mkdir(parents=True, exist_ok=True)
+        remote_config_dir = outputdir / "remote_configurations"
+        remote_config_dir.mkdir(parents=True, exist_ok=True)
         self._write_cluster_version_mapping(outputdir)
-        self._write_configs(
-            outputdir / "remote_configurations",
-            self.configs_v2,
-            schema_ref="remote_configuration_v2.schema.json",
-        )
+        for filename, config in self.configs_v2.items():
+            filepath = self._write_config(remote_config_dir, filename, config)
+            self._assert_json_schema(filepath, config, "remote_configuration_v2.schema.json")
 
     def _write_cluster_version_mapping(self, outputdir):
         srcpath = self.sourcedir / "templates_v2" / "cluster_version_mapping.json"
@@ -198,12 +197,12 @@ class RemoteConfigurations:
         logger.debug(f"Loading file: {path}")
         return json.loads(path.read_text())
 
-    def _write_configs(self, outputdir, configs, schema_ref):
-        for filename, config in configs.items():
-            filepath = outputdir / filename
-            logger.info(f"Writing config: {filepath}")
-            filepath.write_text(json.dumps(config))
-            self._assert_json_schema(filepath, config, schema_ref)
+    @staticmethod
+    def _write_config(outputdir, filename, config):
+        filepath = outputdir / filename
+        logger.info(f"Writing config: {filepath}")
+        filepath.write_text(json.dumps(config))
+        return filepath
 
     def _assert_json_schema(self, filepath, content, schema_ref):
         logger.info(f"Validating file against {schema_ref}: {filepath}")
