@@ -140,7 +140,21 @@ class RemoteConfigurations:
     def _validate_cluster_version_mapping(self, filepath):
         content = self._load_json(filepath)
         self._assert_json_schema(filepath, content, "cluster_version_mapping.schema.json")
+        self._assert_cluster_version_mapping_first_interval(filepath, content)
         self._assert_cluster_version_mapping_order(filepath, content)
+
+    def _assert_cluster_version_mapping_first_interval(self, filepath, content):
+        first_version = content[0][0]
+        if semver.Version.parse(first_version) > semver.Version(4, 17, 0, prerelease=0):
+            e = ClusterVersionMappingError(
+                f"Invalid first interval: '{first_version}' is greater than '4.17.0-0': {filepath}"
+            )
+            e.add_note(
+                "\nThe cluster_version_mapping.json file has to cover all OCP versions "
+                "with the Rapid Recommendations feature (OCP 4.17.0-0 and greater)."
+            )
+            logger.critical(f"❌ {e.__class__.__name__}: {e}")
+            raise (e)
 
     def _assert_cluster_version_mapping_order(self, filepath, content):
         i = 0
