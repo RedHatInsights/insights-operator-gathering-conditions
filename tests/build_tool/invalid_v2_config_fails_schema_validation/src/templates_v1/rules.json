@@ -1,0 +1,5 @@
+{
+  "rules": [
+    "conditional_gathering_rules/valid.json"
+  ]
+}

@@ -1,0 +1,1 @@
+CRITICAL: ❌ JSON validation error: ValidationError: 'INVALID VERSION' does not match

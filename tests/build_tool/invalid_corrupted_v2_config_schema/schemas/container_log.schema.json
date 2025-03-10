@@ -1,0 +1,45 @@
+{
+  "$id": "container_log.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Container Log Request used in Rapid Recommendations",
+  "examples": [
+    {
+      "messages": [
+        "wal:\\ max\\ entry\\ size\\ limit\\ exceeded"
+      ],
+      "namespace": "openshift-etcd",
+      "pod_name_regex": ".*"
+    }
+  ],
+  "properties": {
+    "messages": {
+      "description": "The list of regular expressions used to filter the container logs",
+      "items": {
+        "description": "Regular expression used to filter the container log. The collected data will include all lines matching the regular expression (as implemented by https://pkg.go.dev/regexp#Regexp.Match).",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": false
+    },
+    "namespace": {
+      "description": "OpenShift namespace name",
+      "pattern": "^openshift-[a-zA-Z0-9_.-]{1,128}$|^kube-[a-zA-Z0-9_.-]{1,128}$",
+      "type": "string"
+    },
+    "pod_name_regex": {
+      "description": "Regular expression used to find matching Pods",
+      "type": "string"
+    },
+    "previous": {
+      "description": "Flag to distinguish filtering of the previous container's log",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "namespace",
+    "pod_name_regex",
+    "messages"
+  ],
+  "title": "Container Log Request",
+  "type": "object"
+}

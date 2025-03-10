@@ -1,0 +1,3 @@
+remote_configuration_v2.schema.json
+v2/remote_configurations/config_default.json
+jsonschema.exceptions.ValidationError: 'Very Bad Rule In V2 Config' does not match '^[a-zA-Z0-9_]{1,128}$'

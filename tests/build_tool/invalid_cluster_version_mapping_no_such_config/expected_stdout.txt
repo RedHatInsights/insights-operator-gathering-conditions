@@ -1,0 +1,2 @@
+v2/remote_configurations/no_such_config.json
+ClusterVersionMappingError: 'no_such_config.json' does not reference a valid config at index 1

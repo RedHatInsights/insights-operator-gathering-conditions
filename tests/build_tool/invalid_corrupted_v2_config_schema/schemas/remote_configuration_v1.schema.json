@@ -29,7 +29,7 @@
       "$ref": "gathering_rules.schema.json"
     },
     "version": {
-      "type": "BadTypeInV1Schema"
+      "type": "string"
     }
   },
   "required": [
