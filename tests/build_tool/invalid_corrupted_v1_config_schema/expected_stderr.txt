@@ -1,1 +1,3 @@
-jsonschema.exceptions.SchemaError: 'BadType' is not valid under any of the given schemas
+invalid_corrupted_v1_config_schema/schemas
+remote_configuration_v1.schema.json
+jsonschema.exceptions.SchemaError: 'BadTypeInV1Schema' is not valid under any of the given schemas

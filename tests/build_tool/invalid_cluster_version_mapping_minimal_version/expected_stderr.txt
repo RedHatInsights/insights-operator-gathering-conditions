@@ -1,0 +1,2 @@
+src/templates_v2/cluster_version_mapping.json
+ClusterVersionMappingError: Invalid first interval: '4.18.0' is greater than '4.17.0-0'

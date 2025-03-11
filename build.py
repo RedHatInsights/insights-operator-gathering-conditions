@@ -38,6 +38,10 @@ logging_config = {
 }
 
 
+class ClusterVersionMappingError(RuntimeError):
+    """An exception used to report cluster version mapping validation errors."""
+
+
 class RemoteConfigurations:
     def __init__(self, sourcedir, version, schemadir):
         logger.info(f"Current working directory: {pathlib.Path().absolute()}")
@@ -109,25 +113,81 @@ class RemoteConfigurations:
         self._write_v2(outputdir / "v2")
 
     def _write_v1(self, outputdir):
-        self._assert_json_schema(
-            self.configs_v1["rules.json"], "remote_configuration_v1.schema.json"
-        )
         logger.info("Writing v1 configs")
         outputdir.mkdir(parents=True, exist_ok=True)
-        self._write_configs(outputdir, self.configs_v1)
+        for filename, config in self.configs_v1.items():
+            filepath = self._write_config(outputdir, filename, config)
+            self._assert_json_schema(filepath, config, "remote_configuration_v1.schema.json")
 
     def _write_v2(self, outputdir):
         logger.info("Writing v2 configs")
-        (outputdir / "remote_configurations").mkdir(parents=True, exist_ok=True)
+        remote_config_dir = outputdir / "remote_configurations"
+        remote_config_dir.mkdir(parents=True, exist_ok=True)
         self._write_cluster_version_mapping(outputdir)
-        self._write_configs(outputdir / "remote_configurations", self.configs_v2)
+        for filename, config in self.configs_v2.items():
+            filepath = self._write_config(remote_config_dir, filename, config)
+            self._assert_json_schema(filepath, config, "remote_configuration_v2.schema.json")
 
     def _write_cluster_version_mapping(self, outputdir):
-        # preserve non-standard formatting of the file
         srcpath = self.sourcedir / "templates_v2" / "cluster_version_mapping.json"
+        self._validate_cluster_version_mapping(srcpath)
         dstpath = outputdir / "cluster_version_mapping.json"
         logger.info(f"Writing cluster_version_mapping.json: {dstpath}")
+        # preserve non-standard formatting of the file
         shutil.copy(srcpath, dstpath)
+
+    def _validate_cluster_version_mapping(self, filepath):
+        content = self._load_json(filepath)
+        self._assert_json_schema(filepath, content, "cluster_version_mapping.schema.json")
+        self._assert_cluster_version_mapping_first_interval(filepath, content)
+        self._assert_cluster_version_mapping_order(filepath, content)
+        self._assert_cluster_version_mapping_configs_exist(filepath, content)
+
+    def _assert_cluster_version_mapping_first_interval(self, filepath, content):
+        first_version = content[0][0]
+        if semver.Version.parse(first_version) > semver.Version(4, 17, 0, prerelease=0):
+            e = ClusterVersionMappingError(
+                f"Invalid first interval: '{first_version}' is greater than '4.17.0-0': {filepath}"
+            )
+            e.add_note(
+                "\nThe cluster_version_mapping.json file has to cover all OCP versions "
+                "with the Rapid Recommendations feature (OCP 4.17.0-0 and greater)."
+            )
+            logger.critical(f"❌ {e.__class__.__name__}: {e}")
+            raise (e)
+
+    def _assert_cluster_version_mapping_order(self, filepath, content):
+        v1 = None
+        for i, (raw_version, _) in enumerate(content):
+            v2 = semver.Version.parse(raw_version)
+            if v1 is None or v1 < v2:
+                v1 = v2
+            else:
+                e = ClusterVersionMappingError(
+                    f"'{v1}' is NOT smaller than '{v2}' in semantic versioning "
+                    f"at index {i}: {filepath}"
+                )
+                e.add_note(
+                    "\nPairs in the cluster_version_mapping.json file "
+                    "must have strictly increasing semantic versions."
+                )
+                logger.critical(f"❌ {e.__class__.__name__}: {e}")
+                raise (e)
+
+    def _assert_cluster_version_mapping_configs_exist(self, filepath, content):
+        for i, (_, config_name) in enumerate(content):
+            # If we loaded the config file, we trust ourselves that
+            # we would write the config or report another error.
+            if config_name not in self.configs_v2:
+                template_path = (
+                    self.sourcedir / "templates_v2" / "remote_configurations" / config_name
+                )
+                e = ClusterVersionMappingError(
+                    f"'{config_name}' does not reference a valid config at index {i}: {filepath}; "
+                    f"expected config template path: {template_path}"
+                )
+                logger.critical(f"❌ {e.__class__.__name__}: {e}")
+                raise (e)
 
     @staticmethod
     def _load_json(path):
@@ -135,25 +195,24 @@ class RemoteConfigurations:
         return json.loads(path.read_text())
 
     @staticmethod
-    def _write_configs(outputdir, configs):
-        for filename, config in configs.items():
-            filepath = outputdir / filename
-            logger.info(f"Writing config: {filepath}")
-            filepath.write_text(json.dumps(config))
+    def _write_config(outputdir, filename, config):
+        filepath = outputdir / filename
+        logger.info(f"Writing config: {filepath}")
+        filepath.write_text(json.dumps(config))
+        return filepath
 
-    def _assert_json_schema(self, content, schema_ref):
-        logger.info(f"Validating generated file against {schema_ref}")
+    def _assert_json_schema(self, filepath, content, schema_ref):
+        logger.info(f"Validating file against {schema_ref}: {filepath}")
 
         try:
             schema = self.registry.get_or_retrieve(schema_ref).value.contents
             jsonschema.validate(content, schema, registry=self.registry)
 
-        except jsonschema.ValidationError as e:
-            logger.critical(f"❌ JSON validation error: {e.message}")
-            raise (e)
-
-        except jsonschema.SchemaError as e:
-            logger.critical(f"❌ Schema error: {e.message}")
+        except (jsonschema.ValidationError, jsonschema.SchemaError) as e:
+            e.add_note(f"\nValidated file: {filepath}")
+            e.add_note(f"Schema directory: {self.schemadir}")
+            e.add_note(f"Schema: {schema_ref}")
+            logger.critical(f"❌ JSON validation error: {e.__class__.__name__}: {e.message}")
             raise (e)
 
     @staticmethod
