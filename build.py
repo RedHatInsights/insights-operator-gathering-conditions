@@ -158,8 +158,7 @@ class RemoteConfigurations:
 
     def _assert_cluster_version_mapping_order(self, filepath, content):
         v1 = None
-        for i, entry in enumerate(content):
-            raw_version, _ = entry
+        for i, (raw_version, _) in enumerate(content):
             v2 = semver.Version.parse(raw_version)
             if v1 is None or v1 < v2:
                 v1 = v2
@@ -176,8 +175,7 @@ class RemoteConfigurations:
                 raise (e)
 
     def _assert_cluster_version_mapping_configs_exist(self, filepath, content):
-        for i, entry in enumerate(content):
-            _, config_name = entry
+        for i, (_, config_name) in enumerate(content):
             # If we loaded the config file, we trust ourselves that
             # we would write the config or report another error.
             if config_name not in self.configs_v2:
