@@ -157,13 +157,12 @@ class RemoteConfigurations:
             raise (e)
 
     def _assert_cluster_version_mapping_order(self, filepath, content):
-        i = 0
-        v1 = semver.Version.parse(content[0][0])
-        for raw_version, _ in content[1:]:
+        v1 = None
+        for i, entry in enumerate(content):
+            raw_version, _ = entry
             v2 = semver.Version.parse(raw_version)
-            if v1 < v2:
+            if v1 is None or v1 < v2:
                 v1 = v2
-                i = i + 1
             else:
                 e = ClusterVersionMappingError(
                     f"'{v1}' is NOT smaller than '{v2}' in semantic versioning "
