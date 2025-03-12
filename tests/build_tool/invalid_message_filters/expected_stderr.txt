@@ -1,0 +1,3 @@
+v2/remote_configurations/config_default.json
+RegexValidationError: Message filters do not comprise a valid golang regular expression
+INVALID MESSAGE FILTER '['

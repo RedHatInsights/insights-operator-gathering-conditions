@@ -149,6 +149,7 @@ class RemoteConfigurations:
             filepath = self._write_config(remote_config_dir, filename, config)
             self._assert_json_schema(filepath, config, "remote_configuration_v2.schema.json")
             self._assert_valid_pod_name_regexes(filepath, config)
+            self._assert_valid_message_filters(filepath, config)
 
     def _write_cluster_version_mapping(self, outputdir):
         srcpath = self.sourcedir / "templates_v2" / "cluster_version_mapping.json"
@@ -222,6 +223,26 @@ class RemoteConfigurations:
                 e.add_note(validation.stderr)
                 logger.critical(f"❌ {e.__class__.__name__}: {e}")
                 raise (e)
+
+    def _assert_valid_message_filters(self, filepath, config):
+        filters = []
+        for request in config["container_logs"]:
+            filters.extend(request["messages"])
+        # This is an over-approximation - we are trying to compile the biggest regular expression
+        # that the Insights Operator could use based on the given config. This would occur for a pod
+        # name that would match the pod name regexes in all requests, which is unlikely. If this
+        # over-approximation starts producing false positives (each individual filter is valid but
+        # the combined expression is not), we will need to consider other measures against message
+        # filters that would exceed limits of golang regular expressions.
+        regex = "|".join(filters)
+        validation = self.regex_validator.validate(regex)
+        if validation.returncode != 0:
+            e = RegexValidationError(
+                f"Message filters do not comprise a valid golang regular expression: {filepath}"
+            )
+            e.add_note(validation.stderr)
+            logger.critical(f"❌ {e.__class__.__name__}: {e}")
+            raise (e)
 
     @staticmethod
     def _load_json(path):
