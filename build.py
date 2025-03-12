@@ -7,6 +7,7 @@ import logging
 import logging.config
 import pathlib
 import shutil
+import subprocess
 
 import git
 import jsonschema
@@ -42,6 +43,22 @@ class ClusterVersionMappingError(RuntimeError):
     """An exception used to report cluster version mapping validation errors."""
 
 
+class RegexValidationError(RuntimeError):
+    """An exception used to report invalid regular expressions."""
+
+
+class GolangRegexValidator:
+    """Wrapper for running a golang validation tool as a subprocess."""
+
+    def __init__(self, file):
+        self._file = str(file)
+
+    def validate(self, regex):
+        return subprocess.run(
+            ["go", "run", self._file], input=regex, capture_output=True, encoding="utf-8"
+        )
+
+
 class RemoteConfigurations:
     def __init__(self, sourcedir, version, schemadir):
         logger.info(f"Current working directory: {pathlib.Path().absolute()}")
@@ -54,6 +71,10 @@ class RemoteConfigurations:
 
         self.version = version if version else self.get_version_from_git()
         logger.info(f"Remote configuration version: {self.version}")
+
+        regex_validator_path = pathlib.Path() / "golang_regex_validator" / "regexCompiler.go"
+        self.regex_validator = GolangRegexValidator(regex_validator_path)
+        logger.info(f"Golang regex validator: {regex_validator_path}")
 
         self.registry = Registry(retrieve=self._retrieve_schema)
         self.configs_v1 = {}
@@ -127,6 +148,7 @@ class RemoteConfigurations:
         for filename, config in self.configs_v2.items():
             filepath = self._write_config(remote_config_dir, filename, config)
             self._assert_json_schema(filepath, config, "remote_configuration_v2.schema.json")
+            self._assert_valid_pod_name_regexes(filepath, config)
 
     def _write_cluster_version_mapping(self, outputdir):
         srcpath = self.sourcedir / "templates_v2" / "cluster_version_mapping.json"
@@ -186,6 +208,18 @@ class RemoteConfigurations:
                     f"'{config_name}' does not reference a valid config at index {i}: {filepath}; "
                     f"expected config template path: {template_path}"
                 )
+                logger.critical(f"❌ {e.__class__.__name__}: {e}")
+                raise (e)
+
+    def _assert_valid_pod_name_regexes(self, filepath, config):
+        for i, request in enumerate(config["container_logs"]):
+            regex = request["pod_name_regex"]
+            validation = self.regex_validator.validate(regex)
+            if validation.returncode != 0:
+                e = RegexValidationError(
+                    f"Invalid golang regular expression in '.container_logs[{i}].pod_name_regex': {filepath}"
+                )
+                e.add_note(validation.stderr)
                 logger.critical(f"❌ {e.__class__.__name__}: {e}")
                 raise (e)
 
