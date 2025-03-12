@@ -1,8 +1,8 @@
 {
-  "$id": "remote_configuration_v2_template",
+  "$id": "remote_configuration_v2_blueprint",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "description": "Template of a remote configuration for the Rapid Recommendations feature of the Insights Operator.",
+  "description": "Blueprint of a remote configuration for the Rapid Recommendations feature of the Insights Operator.",
   "example": {
     "conditional_gathering_rules": [
       "conditional_gathering_rules/*.json"

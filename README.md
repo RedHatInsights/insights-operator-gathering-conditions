@@ -34,24 +34,24 @@ details).
 * `container_log_requests/*/*.json`
   [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/container_log.schema.json)]
   * A library of container log requests, organized by their source.
-* `templates_v1/rules.json`
-  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v1_template.schema.json)]
-  * A template for the remote configuration served by the `v1` API of the
+* `blueprints_v1/rules.json`
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v1_blueprint.schema.json)]
+  * A blueprint for the remote configuration served by the `v1` API of the
     [[Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)].
-* `templates_v2/cluster_version_mapping.json`
+* `blueprints_v2/cluster_version_mapping.json`
   [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/cluster_version_mapping.schema.json)]
   * A mapping between cluster version ranges and remote configurations used by the
     [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service)
     for the `v2` API.
-* `templates_v2/remote_configurations/*.json`
-  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v2_template.schema.json)]
-  * Templates for remote configurations served by the `v2` API of the
+* `blueprints_v2/remote_configurations/*.json`
+  [[schema](https://github.com/RedHatInsights/insights-operator-gathering-conditions/blob/main/schemas/remote_configuration_v2_blueprint.schema.json)]
+  * Blueprints for remote configurations served by the `v2` API of the
     [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
 
 
 ## Build
 
-The [`build.py`](./build.py) script expands templates in `templates_v1` and `templates_v2`
+The [`build.py`](./build.py) script expands blueprints in `blueprints_v1` and `blueprints_v2`
 into files needed by the
 [Insights Operator Gathering Conditions Service](https://github.com/redhatinsights/insights-operator-gathering-conditions-service).
 

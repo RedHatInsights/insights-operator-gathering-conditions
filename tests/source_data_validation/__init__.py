@@ -1,16 +1,16 @@
 from tests import PROJECT_ROOT
 
-CLUSTER_MAPPING_PATH = PROJECT_ROOT / "templates_v2" / "cluster_version_mapping.json"
+CLUSTER_MAPPING_PATH = PROJECT_ROOT / "blueprints_v2" / "cluster_version_mapping.json"
 
 CONTAINER_LOG_REQUESTS_DIR = PROJECT_ROOT / "container_log_requests"
 
 GATHERING_RULES_DIR = PROJECT_ROOT / "conditional_gathering_rules"
 
-REMOTE_CONFIGURATIONS_V2_TEMPLATE_DIR = PROJECT_ROOT / "templates_v2" / "remote_configurations"
+REMOTE_CONFIGURATIONS_V2_BLUEPRINT_DIR = PROJECT_ROOT / "blueprints_v2" / "remote_configurations"
 
 
 def remote_configurations():
-    return REMOTE_CONFIGURATIONS_V2_TEMPLATE_DIR.glob("*.json")
+    return REMOTE_CONFIGURATIONS_V2_BLUEPRINT_DIR.glob("*.json")
 
 
 def gathering_rules():

@@ -94,25 +94,25 @@ class RemoteConfigurations:
         return self.parse_version_from_git(raw_version)
 
     def _load_v1_config(self):
-        template_name = "rules.json"
-        template_file = self.sourcedir / "templates_v1" / template_name
-        logger.info(f"Building config from v1 blueprint: {template_file}")
-        template = self._load_json(template_file)
-        self.configs_v1[template_name] = {
-            "rules": self._expand_glob_list(template["rules"]),
+        blueprint_name = "rules.json"
+        blueprint_file = self.sourcedir / "blueprints_v1" / blueprint_name
+        logger.info(f"Building config from v1 blueprint: {blueprint_file}")
+        blueprint = self._load_json(blueprint_file)
+        self.configs_v1[blueprint_name] = {
+            "rules": self._expand_glob_list(blueprint["rules"]),
             "version": self.version,
         }
 
     def _load_v2_configs(self):
-        templates_dir = self.sourcedir / "templates_v2" / "remote_configurations"
-        for template_file in templates_dir.glob("*.json"):
-            logger.info(f"Building config from v2 blueprint: {template_file}")
-            template = self._load_json(template_file)
-            self.configs_v2[template_file.name] = {
+        blueprints_dir = self.sourcedir / "blueprints_v2" / "remote_configurations"
+        for blueprint_file in blueprints_dir.glob("*.json"):
+            logger.info(f"Building config from v2 blueprint: {blueprint_file}")
+            blueprint = self._load_json(blueprint_file)
+            self.configs_v2[blueprint_file.name] = {
                 "conditional_gathering_rules": self._expand_glob_list(
-                    template["conditional_gathering_rules"]
+                    blueprint["conditional_gathering_rules"]
                 ),
-                "container_logs": self._expand_glob_list(template["container_logs"]),
+                "container_logs": self._expand_glob_list(blueprint["container_logs"]),
                 "version": self.version,
             }
 
@@ -152,7 +152,7 @@ class RemoteConfigurations:
             self._assert_valid_message_filters(filepath, config)
 
     def _write_cluster_version_mapping(self, outputdir):
-        srcpath = self.sourcedir / "templates_v2" / "cluster_version_mapping.json"
+        srcpath = self.sourcedir / "blueprints_v2" / "cluster_version_mapping.json"
         self._validate_cluster_version_mapping(srcpath)
         dstpath = outputdir / "cluster_version_mapping.json"
         logger.info(f"Writing cluster_version_mapping.json: {dstpath}")
@@ -202,12 +202,12 @@ class RemoteConfigurations:
             # If we loaded the config file, we trust ourselves that
             # we would write the config or report another error.
             if config_name not in self.configs_v2:
-                template_path = (
-                    self.sourcedir / "templates_v2" / "remote_configurations" / config_name
+                blueprint_path = (
+                    self.sourcedir / "blueprints_v2" / "remote_configurations" / config_name
                 )
                 e = ClusterVersionMappingError(
                     f"'{config_name}' does not reference a valid config at index {i}: {filepath}; "
-                    f"expected config template path: {template_path}"
+                    f"expected config blueprint path: {blueprint_path}"
                 )
                 logger.critical(f"❌ {e.__class__.__name__}: {e}")
                 raise (e)
