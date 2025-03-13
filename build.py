@@ -133,28 +133,28 @@ class RemoteConfigurations:
         self._write_v1(outputdir / "v1")
         self._write_v2(outputdir / "v2")
 
-    def _write_v1(self, outputdir):
+    def _write_v1(self, outputdir_v1):
         logger.info("Writing v1 configs")
-        outputdir.mkdir(parents=True, exist_ok=True)
+        outputdir_v1.mkdir(parents=True, exist_ok=True)
         for filename, config in self.configs_v1.items():
-            filepath = self._write_config(outputdir, filename, config)
+            filepath = self._write_config(outputdir_v1, filename, config)
             self._assert_json_schema(filepath, config, "remote_configuration_v1.schema.json")
 
-    def _write_v2(self, outputdir):
+    def _write_v2(self, outputdir_v2):
         logger.info("Writing v2 configs")
-        remote_config_dir = outputdir / "remote_configurations"
+        remote_config_dir = outputdir_v2 / "remote_configurations"
         remote_config_dir.mkdir(parents=True, exist_ok=True)
-        self._write_cluster_version_mapping(outputdir)
+        self._write_cluster_version_mapping(outputdir_v2)
         for filename, config in self.configs_v2.items():
             filepath = self._write_config(remote_config_dir, filename, config)
             self._assert_json_schema(filepath, config, "remote_configuration_v2.schema.json")
             self._assert_valid_pod_name_regexes(filepath, config)
             self._assert_valid_message_filters(filepath, config)
 
-    def _write_cluster_version_mapping(self, outputdir):
+    def _write_cluster_version_mapping(self, outputdir_v2):
         srcpath = self.sourcedir / "blueprints_v2" / "cluster_version_mapping.json"
         self._validate_cluster_version_mapping(srcpath)
-        dstpath = outputdir / "cluster_version_mapping.json"
+        dstpath = outputdir_v2 / "cluster_version_mapping.json"
         logger.info(f"Writing cluster_version_mapping.json: {dstpath}")
         # preserve non-standard formatting of the file
         shutil.copy(srcpath, dstpath)
@@ -250,8 +250,8 @@ class RemoteConfigurations:
         return json.loads(path.read_text())
 
     @staticmethod
-    def _write_config(outputdir, filename, config):
-        filepath = outputdir / filename
+    def _write_config(dirpath, filename, config):
+        filepath = dirpath / filename
         logger.info(f"Writing config: {filepath}")
         filepath.write_text(json.dumps(config))
         return filepath
