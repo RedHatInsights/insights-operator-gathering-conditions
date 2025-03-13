@@ -183,7 +183,8 @@ class RemoteConfigurations:
         logger.info("Writing v1 configs")
         outputdir_v1.mkdir(parents=True, exist_ok=True)
         for filename, config in self.configs_v1.items():
-            filepath = self._write_config(outputdir_v1, filename, config)
+            filepath = outputdir_v1 / filename
+            self._write_config(filepath, config)
             self._assert_json_schema(filepath, config, "remote_configuration_v1.schema.json")
 
     def _write_v2(self, outputdir_v2):
@@ -202,7 +203,8 @@ class RemoteConfigurations:
 
     def _write_v2_remote_configurations(self, remote_config_dir):
         for filename, config in self.configs_v2.items():
-            filepath = self._write_config(remote_config_dir, filename, config)
+            filepath = remote_config_dir / filename
+            self._write_config(filepath, config)
             self._assert_json_schema(filepath, config, "remote_configuration_v2.schema.json")
             self._assert_valid_pod_name_regexes(filepath, config)
             self._assert_valid_message_filters(filepath, config)
@@ -276,8 +278,7 @@ class RemoteConfigurations:
         return json.loads(path.read_text())
 
     @staticmethod
-    def _write_config(dirpath, filename, config):
-        filepath = dirpath / filename
+    def _write_config(filepath, config):
         logger.info(f"Writing config: {filepath}")
         filepath.write_text(json.dumps(config))
         return filepath
