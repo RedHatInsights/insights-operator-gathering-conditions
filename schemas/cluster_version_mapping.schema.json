@@ -1,7 +1,6 @@
 {
   "$id": "cluster_version_mapping.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "A sequence of pairs specifying OpenShift version intervals and specific remote configurations to be used for those intervals. The sequence of pairs in the array must specify a strictly increasing sequence of versions (this requirement is not imposed by the schema itself). An interval is defined by two consecutive pairs.",
   "descriptions": "A data structure used by the Insights Operator Gathering Conditions Service v2 API to map Insights Operator versions to specific remote configurations for those versions.",
   "examples": [
     [
@@ -34,7 +33,7 @@
         "type": "string"
       },
       {
-        "description": "The file name of a pre-generated remote configuration that the Insights Operator Conditional Gathering Service v2 API will return for versions in the interval represented by the pair.",
+        "description": "A path to a remote configuration file that the Insights Operator Conditional Gathering Service v2 API will return for versions in the interval represented by the pair. The path must be relative to the location of the cluster_version_mapping.json file and must not point outside of its parent directory.",
         "type": "string"
       }
     ],

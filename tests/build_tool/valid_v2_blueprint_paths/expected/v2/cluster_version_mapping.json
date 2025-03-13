@@ -1,0 +1,4 @@
+[
+    ["4.0.0", "remote_configurations_A/config_minimal.json"],
+    ["4.1.0", "remote_configurations_B/config_default.json"]
+]

@@ -1,5 +1,5 @@
 [
-    ["4.0.0", "config_default.json"],
-    ["4.2.0", "config_default.json"],
-    ["4.2.0", "config_other.json"]
+    ["4.0.0", "remote_configurations/config_default.json"],
+    ["4.2.0", "remote_configurations/config_default.json"],
+    ["4.2.0", "remote_configurations/config_other.json"]
 ]
