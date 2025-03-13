@@ -21,7 +21,7 @@ def files_and_schemas_to_validate():
         (rules_file, "gathering_rule.schema.json") for rules_file in gathering_rules()
     ]
     files_and_schemas += [
-        (config_file, "remote_configuration_v2_template.schema.json")
+        (config_file, "remote_configuration_v2_blueprint.schema.json")
         for config_file in remote_configurations()
     ]
     return files_and_schemas

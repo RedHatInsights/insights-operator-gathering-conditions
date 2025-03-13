@@ -6,7 +6,7 @@ import pytest
 from tests.source_data_validation import (
     CLUSTER_MAPPING_PATH,
     PROJECT_ROOT,
-    REMOTE_CONFIGURATIONS_V2_TEMPLATE_DIR,
+    REMOTE_CONFIGURATIONS_V2_BLUEPRINT_DIR,
     container_log_requests,
     gathering_rules,
     remote_configurations,
@@ -19,7 +19,7 @@ def test_all_remote_configurations_used(remote_config_path):
     mapping_configs = [pair[1] for pair in mapping]
 
     relative_config_path = str(
-        remote_config_path.relative_to(REMOTE_CONFIGURATIONS_V2_TEMPLATE_DIR)
+        remote_config_path.relative_to(REMOTE_CONFIGURATIONS_V2_BLUEPRINT_DIR)
     )
     assert relative_config_path in mapping_configs
 

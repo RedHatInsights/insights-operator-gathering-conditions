@@ -1,2 +1,2 @@
-src/templates_v2/cluster_version_mapping.json
+src/blueprints_v2/cluster_version_mapping.json
 ClusterVersionMappingError: '4.2.0' is NOT smaller than '4.2.0' in semantic versioning at index 2
