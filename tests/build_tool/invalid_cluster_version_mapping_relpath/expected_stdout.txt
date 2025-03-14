@@ -1,0 +1,1 @@
+ClusterVersionMappingError: '../config_not_allowed.json' does not reference a valid config at index 1
