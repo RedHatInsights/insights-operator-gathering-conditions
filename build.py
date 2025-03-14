@@ -78,6 +78,7 @@ class RemoteConfigurations:
 
         self.registry = Registry(retrieve=self._retrieve_schema)
         self.configs_v1 = {}
+        self.cluster_version_mapping = None
         self.configs_v2 = {}
 
         self._load_v1_config()
@@ -104,17 +105,62 @@ class RemoteConfigurations:
         }
 
     def _load_v2_configs(self):
-        blueprints_dir = self.sourcedir / "blueprints_v2" / "remote_configurations"
-        for blueprint_file in blueprints_dir.glob("*.json"):
-            logger.info(f"Building config from v2 blueprint: {blueprint_file}")
-            blueprint = self._load_json(blueprint_file)
-            self.configs_v2[blueprint_file.name] = {
+        blueprints_v2 = self.sourcedir / "blueprints_v2"
+        self._load_v2_cluster_version_mapping(blueprints_v2)
+        self._load_v2_remote_configurations(blueprints_v2)
+
+    def _load_v2_cluster_version_mapping(self, blueprints_v2):
+        filepath = self._get_v2_cluster_version_mapping_path(blueprints_v2)
+        logger.info(f"Loading cluster version mapping blueprint: {filepath}")
+        self.cluster_version_mapping = self._load_json(filepath)
+        self._assert_json_schema(
+            filepath, self.cluster_version_mapping, "cluster_version_mapping.schema.json"
+        )
+        self._assert_cluster_version_mapping_first_interval(filepath, self.cluster_version_mapping)
+        self._assert_cluster_version_mapping_order(filepath, self.cluster_version_mapping)
+
+    def _load_v2_remote_configurations(self, blueprints_v2):
+        for i, (_, relpath) in enumerate(self.cluster_version_mapping):
+            # The same remote configuration file can be used for multiple version ranges.
+            if relpath in self.configs_v2:
+                continue
+
+            blueprint_path = self._get_v2_remote_configuration_blueprint_path(
+                blueprints_v2, i, relpath
+            )
+
+            logger.info(f"Building config from v2 blueprint: {blueprint_path}")
+            blueprint = self._load_json(blueprint_path)
+            self.configs_v2[relpath] = {
                 "conditional_gathering_rules": self._expand_glob_list(
                     blueprint["conditional_gathering_rules"]
                 ),
                 "container_logs": self._expand_glob_list(blueprint["container_logs"]),
                 "version": self.version,
             }
+
+    @staticmethod
+    def _get_v2_cluster_version_mapping_path(root_v2):
+        return root_v2 / "cluster_version_mapping.json"
+
+    @staticmethod
+    def _get_v2_remote_configuration_path(root_v2, relpath):
+        return root_v2 / relpath
+
+    def _get_v2_remote_configuration_blueprint_path(self, blueprints_v2, idx, relpath):
+        blueprint_path = self._get_v2_remote_configuration_path(blueprints_v2, relpath)
+
+        if not blueprint_path.is_file():
+            cluster_version_mapping_path = self._get_v2_cluster_version_mapping_path(blueprints_v2)
+            e = ClusterVersionMappingError(
+                f"'{relpath}' does not reference a valid config at index {idx}: "
+                f"{cluster_version_mapping_path}; "
+                f"expected remote configuration blueprint path: {blueprint_path}"
+            )
+            logger.critical(f"❌ {e.__class__.__name__}: {e}")
+            raise (e)
+
+        return blueprint_path
 
     def _expand_glob_list(self, globs):
         loaded_paths = set()
@@ -133,38 +179,34 @@ class RemoteConfigurations:
         self._write_v1(outputdir / "v1")
         self._write_v2(outputdir / "v2")
 
-    def _write_v1(self, outputdir):
+    def _write_v1(self, outputdir_v1):
         logger.info("Writing v1 configs")
-        outputdir.mkdir(parents=True, exist_ok=True)
+        outputdir_v1.mkdir(parents=True, exist_ok=True)
         for filename, config in self.configs_v1.items():
-            filepath = self._write_config(outputdir, filename, config)
+            filepath = outputdir_v1 / filename
+            self._write_config(filepath, config)
             self._assert_json_schema(filepath, config, "remote_configuration_v1.schema.json")
 
-    def _write_v2(self, outputdir):
+    def _write_v2(self, outputdir_v2):
         logger.info("Writing v2 configs")
-        remote_config_dir = outputdir / "remote_configurations"
-        remote_config_dir.mkdir(parents=True, exist_ok=True)
-        self._write_cluster_version_mapping(outputdir)
-        for filename, config in self.configs_v2.items():
-            filepath = self._write_config(remote_config_dir, filename, config)
-            self._assert_json_schema(filepath, config, "remote_configuration_v2.schema.json")
-            self._assert_valid_pod_name_regexes(filepath, config)
-            self._assert_valid_message_filters(filepath, config)
+        outputdir_v2.mkdir(parents=True, exist_ok=True)
+        self._write_v2_cluster_version_mapping(outputdir_v2)
+        self._write_v2_remote_configurations(outputdir_v2)
 
-    def _write_cluster_version_mapping(self, outputdir):
+    def _write_v2_cluster_version_mapping(self, outputdir_v2):
         srcpath = self.sourcedir / "blueprints_v2" / "cluster_version_mapping.json"
-        self._validate_cluster_version_mapping(srcpath)
-        dstpath = outputdir / "cluster_version_mapping.json"
+        dstpath = outputdir_v2 / "cluster_version_mapping.json"
         logger.info(f"Writing cluster_version_mapping.json: {dstpath}")
         # preserve non-standard formatting of the file
         shutil.copy(srcpath, dstpath)
 
-    def _validate_cluster_version_mapping(self, filepath):
-        content = self._load_json(filepath)
-        self._assert_json_schema(filepath, content, "cluster_version_mapping.schema.json")
-        self._assert_cluster_version_mapping_first_interval(filepath, content)
-        self._assert_cluster_version_mapping_order(filepath, content)
-        self._assert_cluster_version_mapping_configs_exist(filepath, content)
+    def _write_v2_remote_configurations(self, outputdir_v2):
+        for relpath, config in self.configs_v2.items():
+            filepath = outputdir_v2 / relpath
+            self._write_config(filepath, config)
+            self._assert_json_schema(filepath, config, "remote_configuration_v2.schema.json")
+            self._assert_valid_pod_name_regexes(filepath, config)
+            self._assert_valid_message_filters(filepath, config)
 
     def _assert_cluster_version_mapping_first_interval(self, filepath, content):
         first_version = content[0][0]
@@ -193,21 +235,6 @@ class RemoteConfigurations:
                 e.add_note(
                     "\nPairs in the cluster_version_mapping.json file "
                     "must have strictly increasing semantic versions."
-                )
-                logger.critical(f"❌ {e.__class__.__name__}: {e}")
-                raise (e)
-
-    def _assert_cluster_version_mapping_configs_exist(self, filepath, content):
-        for i, (_, config_name) in enumerate(content):
-            # If we loaded the config file, we trust ourselves that
-            # we would write the config or report another error.
-            if config_name not in self.configs_v2:
-                blueprint_path = (
-                    self.sourcedir / "blueprints_v2" / "remote_configurations" / config_name
-                )
-                e = ClusterVersionMappingError(
-                    f"'{config_name}' does not reference a valid config at index {i}: {filepath}; "
-                    f"expected config blueprint path: {blueprint_path}"
                 )
                 logger.critical(f"❌ {e.__class__.__name__}: {e}")
                 raise (e)
@@ -250,9 +277,9 @@ class RemoteConfigurations:
         return json.loads(path.read_text())
 
     @staticmethod
-    def _write_config(outputdir, filename, config):
-        filepath = outputdir / filename
+    def _write_config(filepath, config):
         logger.info(f"Writing config: {filepath}")
+        filepath.parent.mkdir(parents=True, exist_ok=True)
         filepath.write_text(json.dumps(config))
         return filepath
 

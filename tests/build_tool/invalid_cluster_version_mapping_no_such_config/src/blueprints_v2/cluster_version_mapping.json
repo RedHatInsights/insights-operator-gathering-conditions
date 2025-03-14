@@ -1,4 +1,4 @@
 [
-    ["4.0.0", "config_default.json"],
-    ["4.11.0", "no_such_config.json"]
+    ["4.0.0", "remote_configurations/config_default.json"],
+    ["4.11.0", "remote_configurations/no_such_config.json"]
 ]

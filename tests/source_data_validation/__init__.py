@@ -6,11 +6,11 @@ CONTAINER_LOG_REQUESTS_DIR = PROJECT_ROOT / "container_log_requests"
 
 GATHERING_RULES_DIR = PROJECT_ROOT / "conditional_gathering_rules"
 
-REMOTE_CONFIGURATIONS_V2_BLUEPRINT_DIR = PROJECT_ROOT / "blueprints_v2" / "remote_configurations"
+BLUEPRINTS_V2_DIR = PROJECT_ROOT / "blueprints_v2"
 
 
 def remote_configurations():
-    return REMOTE_CONFIGURATIONS_V2_BLUEPRINT_DIR.glob("*.json")
+    return BLUEPRINTS_V2_DIR.glob("remote_configurations/*.json")
 
 
 def gathering_rules():
