@@ -1,0 +1,2 @@
+src/blueprints_v2/cluster_version_mapping.json
+ClusterVersionMappingError: '../config_not_allowed.json' does not reference a valid config at index 1

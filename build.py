@@ -125,9 +125,7 @@ class RemoteConfigurations:
             if relpath in self.configs_v2:
                 continue
 
-            blueprint_path = self._get_v2_remote_configuration_blueprint_path(
-                blueprints_v2, i, relpath
-            )
+            blueprint_path = self._get_v2_remote_configuration_path(blueprints_v2, i, relpath)
 
             logger.info(f"Building config from v2 blueprint: {blueprint_path}")
             blueprint = self._load_json(blueprint_path)
@@ -143,24 +141,28 @@ class RemoteConfigurations:
     def _get_v2_cluster_version_mapping_path(root_v2):
         return root_v2 / "cluster_version_mapping.json"
 
-    @staticmethod
-    def _get_v2_remote_configuration_path(root_v2, relpath):
-        return root_v2 / relpath
+    def _get_v2_remote_configuration_path(self, root_v2, idx, relpath):
+        remote_configuration_path = root_v2 / relpath
 
-    def _get_v2_remote_configuration_blueprint_path(self, blueprints_v2, idx, relpath):
-        blueprint_path = self._get_v2_remote_configuration_path(blueprints_v2, relpath)
-
-        if not blueprint_path.is_file():
-            cluster_version_mapping_path = self._get_v2_cluster_version_mapping_path(blueprints_v2)
+        if not (
+            not pathlib.Path(relpath).is_absolute()
+            and remote_configuration_path.resolve().is_relative_to(root_v2)
+            and remote_configuration_path.is_file()
+        ):
+            cluster_version_mapping_path = self._get_v2_cluster_version_mapping_path(root_v2)
             e = ClusterVersionMappingError(
                 f"'{relpath}' does not reference a valid config at index {idx}: "
                 f"{cluster_version_mapping_path}; "
-                f"expected remote configuration blueprint path: {blueprint_path}"
+                f"expected remote configuration blueprint path: {remote_configuration_path}"
+            )
+            e.add_note(
+                "\nThe path must be a relative path to a JSON file in the same directory as "
+                "the 'cluster_version_mapping.json' file or a subdirectory thereof."
             )
             logger.critical(f"❌ {e.__class__.__name__}: {e}")
             raise (e)
 
-        return blueprint_path
+        return remote_configuration_path
 
     def _expand_glob_list(self, globs):
         loaded_paths = set()
