@@ -1,7 +1,4 @@
-import json
-
 import pytest
-from jsonschema import validate
 
 from tests.source_data_validation import (
     CLUSTER_MAPPING_PATH,
@@ -27,11 +24,6 @@ def files_and_schemas_to_validate():
     return files_and_schemas
 
 
-@pytest.mark.parametrize("content_file,schema", files_and_schemas_to_validate())
-def test_schema(content_file, schema, schema_registry):
-    content = json.loads(content_file.read_text())
-    validate(
-        content,
-        schema_registry.get_or_retrieve(str(schema)).value.contents,
-        registry=schema_registry,
-    )
+@pytest.mark.parametrize("filepath,schema", files_and_schemas_to_validate())
+def test_schema(schema_validator, filepath, schema):
+    schema_validator.validate(filepath, schema)
