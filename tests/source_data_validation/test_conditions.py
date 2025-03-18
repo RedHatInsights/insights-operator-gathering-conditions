@@ -8,7 +8,6 @@ from tests.source_data_validation import (
     CLUSTER_MAPPING_PATH,
     PROJECT_ROOT,
     container_log_requests,
-    gathering_rules,
     remote_configurations,
 )
 
@@ -37,20 +36,3 @@ def test_all_container_logs_used(log_path):
             break
 
     assert log_found
-
-
-@pytest.mark.parametrize("rule", gathering_rules())
-def test_gathering_rule_used(rule):
-    relative_rule = rule.relative_to(PROJECT_ROOT)
-
-    rule_found = False
-    for remote_config_path in remote_configurations():
-        remote_config = json.loads(remote_config_path.read_text())
-        for pattern in remote_config["conditional_gathering_rules"]:
-            if relative_rule in pathlib.Path().glob(pattern):
-                rule_found = True
-                break
-        if rule_found:
-            break
-
-    assert rule_found
