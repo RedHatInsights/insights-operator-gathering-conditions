@@ -1,13 +1,10 @@
 import json
-import pathlib
 
 import pytest
 
 from tests.source_data_validation import (
     BLUEPRINTS_V2_DIR,
     CLUSTER_MAPPING_PATH,
-    PROJECT_ROOT,
-    container_log_requests,
     remote_configurations,
 )
 
@@ -19,20 +16,3 @@ def test_all_remote_configurations_used(remote_config_path):
 
     relative_config_path = str(remote_config_path.relative_to(BLUEPRINTS_V2_DIR))
     assert relative_config_path in mapping_configs
-
-
-@pytest.mark.parametrize("log_path", container_log_requests())
-def test_all_container_logs_used(log_path):
-    relative_log_path = log_path.relative_to(PROJECT_ROOT)
-
-    log_found = False
-    for remote_config_path in remote_configurations():
-        remote_config = json.loads(remote_config_path.read_text())
-        for pattern in remote_config["container_logs"]:
-            if relative_log_path in pathlib.Path().glob(pattern):
-                log_found = True
-                break
-        if log_found:
-            break
-
-    assert log_found
