@@ -5,6 +5,7 @@ import subprocess
 import sys
 
 import deepdiff
+import jsonschema
 import pytest
 from referencing import Registry, Resource
 
@@ -100,9 +101,24 @@ def build_tool_validator(build_tool):
     return BuildToolValidator(build_tool)
 
 
+class SchemaValidator:
+    def __init__(self, schema_registry):
+        self.schema_registry = schema_registry
+
+    def validate(self, filepath, schemaref):
+        content = json.loads(filepath.read_text())
+        jsonschema.validate(
+            content,
+            self.schema_registry.get_or_retrieve(str(schemaref)).value.contents,
+            registry=self.schema_registry,
+        )
+
+
 @pytest.fixture(scope="session")
-def schema_registry():
+def schema_validator():
     def retrieve_schema(schema_ref):
         return Resource.from_contents(json.loads((SCHEMAS / schema_ref).read_text()))
 
-    return Registry(retrieve=retrieve_schema)
+    schema_registry = Registry(retrieve=retrieve_schema)
+
+    return SchemaValidator(schema_registry)
