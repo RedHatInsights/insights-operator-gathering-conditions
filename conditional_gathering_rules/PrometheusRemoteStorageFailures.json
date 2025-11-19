@@ -1,0 +1,17 @@
+{
+  "conditions": [
+    {
+      "alert": {
+        "name": "PrometheusRemoteStorageFailures"
+      },
+      "type": "alert_is_firing"
+    }
+  ],
+  "gathering_functions": {
+    "containers_logs": {
+      "alert_name": "PrometheusRemoteStorageFailures",
+      "container": "prometheus",
+      "tail_lines": 100
+    }
+  }
+}
