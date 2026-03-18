@@ -247,7 +247,8 @@ class RemoteConfigurations:
             validation = self.regex_validator.validate(regex)
             if validation.returncode != 0:
                 e = RegexValidationError(
-                    f"Invalid golang regular expression in '.container_logs[{i}].pod_name_regex': {filepath}"
+                    "Invalid golang regular expression in "
+                    f"'.container_logs[{i}].pod_name_regex': {filepath}"
                 )
                 e.add_note(validation.stderr)
                 logger.critical(f"❌ {e.__class__.__name__}: {e}")
