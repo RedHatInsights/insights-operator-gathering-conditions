@@ -12,11 +12,6 @@ repos:
       - id: check-ast
       - id: check-merge-conflict
       - id: check-added-large-files
-      - id: pretty-format-json
-        args:
-          - --indent=2
-          - --autofix
-        exclude: cluster_version_mapping.json
 
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.11.0.1
